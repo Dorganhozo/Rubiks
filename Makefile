@@ -1,6 +1,6 @@
 all: Main.class 
-	java Main
+	java -cp build Main
 
 
 Main.class: Main.java
-	javac Main.java
+	javac -d build/ Main.java
