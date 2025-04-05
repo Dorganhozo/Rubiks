@@ -3,11 +3,18 @@ import java.util.Map;
 
 public class Main{
 	public static void main(String[] args) throws Exception{
-		Cube cube = new Cube(10);
-		System.out.println(cube.getSide("FRONT"));
+		Cube cube = new Cube(3);
+		System.out.println(cube.getSide(Cube.Side.FRONT));
 	}
 }
 
+//Reponsavel pelas regras do cubo magico
+class Magic{}
+
+//Solucionador e Sorteiador de Cubo magico
+class Auto{}
+
+//Um simples cubo com pecinhas
 class Cube{
 	final int dim;
 	Piece[][][] pieces;
@@ -18,15 +25,13 @@ class Cube{
 	}
 
 
-	public void swipe(int x1, int y1, int z1, int x2, int y2, int z2){
+	public void swipePieces(int x1, int y1, int z1, int x2, int y2, int z2){
 		getPiece(x1, y1, z1).toPosition(x2, y2, z2).toPosition(x1, y1, z1);
 	}
 
-	public String getSide(String name) {
+	public String getSide(Side side) {
 		StringBuilder strb = new StringBuilder();
 		
-		Side side = Side.valueOf(name.toUpperCase());
-	
 		int count=0;
 
 		int dirX, dirY, dirZ;
@@ -38,7 +43,7 @@ class Cube{
 		for(int y=side.y1 * dim; y * dirY <= side.y2 * (dim - 1); y+=dirY)
 			for(int z=side.z1 * dim; z * dirZ <= side.z2 * (dim - 1); z+=dirZ)
 				for(int x=side.x1 * dim; x * dirX <= side.x2 * (dim - 1); x+=dirX){
-					strb.append(pieces[x][y][z].faces.get(name.toLowerCase()));
+					strb.append(pieces[x][y][z].faces.get(side.name().toLowerCase()));
 					if(++count % dim == 0 && count != dim*dim)
 						strb.append("\n");
 
@@ -46,6 +51,7 @@ class Cube{
 
 		return strb.toString();
 	}
+
 	public Cube(int dimension){
 		dim = dimension;
 		pieces = new Piece[dim][dim][dim];
@@ -67,12 +73,6 @@ class Cube{
 	}
 
 	enum Side{
-		//UP(   0, 0, 0, 2, 0, 2),
-		//DOWN( 0, 2, 0, 2, 2, 2),
-		//LEFT( 0, 0, 0, 0, 2, 2),
-		//RIGHT(2, 0, 0, 2, 2, 2),
-		//FRONT(0, 0, 0, 2, 2, 0), 
-		//BACK( 0, 0, 2, 2, 2, 2);
 		UP   (0, 0, 1, 1, 0, 0),
 		DOWN (0, 1, 0, 1, 1, 1),
 		LEFT (0, 0, 1, 0, 1, 0),
@@ -96,13 +96,17 @@ class Cube{
 	}
 
 }
+
 class Piece{
 	Cube parent;
 	Map<String, Face> faces = new HashMap<>();
 	int positionX, positionY, positionZ;
 
 	Piece toPosition(int x, int y, int z){
-		Piece old = parent.pieces[x][y][z];
+
+		Piece old  = null;
+
+		= parent.pieces[x][y][z];
 
 		if(old.getType() != getType())
 			throw new IllegalArgumentException("As peças não se equivalem em tipo.");

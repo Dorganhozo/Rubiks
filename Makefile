@@ -3,4 +3,4 @@ all: Main.class
 
 
 Main.class: Main.java
-	javac -d build/ Main.java
+	javac -d build/ *.java
