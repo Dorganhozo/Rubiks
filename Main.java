@@ -4,18 +4,25 @@ import java.util.Map;
 public class Main{
 	public static void main(String[] args) throws Exception{
 		Cube cube = new Cube(3);
-		System.out.println(cube.getSide(Cube.Side.FRONT));
+		cube.swipePieces(1, 1, 0, 1, 1, 2);
+		System.out.println(cube.getSide(Cube.Group.FRONT));
 	}
 }
 
-//Reponsavel pelas regras do cubo magico
-class Magic{}
+
+//Reponsavel pelos movimentos do cubo magico
+class Magic{
+	static void rotate(Cube cube, Cube.Group group, boolean inverse){
+		
+	}
+}
 
 //Solucionador e Sorteiador de Cubo magico
 class Auto{}
 
 //Um simples cubo com pecinhas
 class Cube{
+	
 	final int dim;
 	Piece[][][] pieces;
 
@@ -24,14 +31,17 @@ class Cube{
     		return pieces[x][y][z];
 	}
 
+	public boolean isOut(int x, int y, int z){
+		return x < 0 || x >= dim || y < 0 || y >= dim || z < 0 || z >= dim;
+	}
 
 	public void swipePieces(int x1, int y1, int z1, int x2, int y2, int z2){
 		getPiece(x1, y1, z1).toPosition(x2, y2, z2).toPosition(x1, y1, z1);
 	}
 
-	public String getSide(Side side) {
+	public String getSide(Group side) {
+
 		StringBuilder strb = new StringBuilder();
-		
 		int count=0;
 
 		int dirX, dirY, dirZ;
@@ -40,12 +50,13 @@ class Cube{
 		dirY = side.y2 - side.y1 < 0? -1 : 1;
 		dirZ = side.z2 - side.z1 < 0? -1 : 1;
 		
-		for(int y=side.y1 * dim; y * dirY <= side.y2 * (dim - 1); y+=dirY)
-			for(int z=side.z1 * dim; z * dirZ <= side.z2 * (dim - 1); z+=dirZ)
-				for(int x=side.x1 * dim; x * dirX <= side.x2 * (dim - 1); x+=dirX){
+		for(int y=side.y1 * (dim -1); y * dirY <= side.y2 * (dim - 1); y+=dirY)
+			for(int z=side.z1 * (dim - 1); z * dirZ <= side.z2 * (dim - 1); z+=dirZ)
+				for(int x=side.x1 * (dim - 1); x * dirX <= side.x2 * (dim - 1); x+=dirX){
 					strb.append(pieces[x][y][z].faces.get(side.name().toLowerCase()));
 					if(++count % dim == 0 && count != dim*dim)
 						strb.append("\n");
+					
 
 				}
 
@@ -72,19 +83,21 @@ class Cube{
 				}
 	}
 
-	enum Side{
+	enum Group{
 		UP   (0, 0, 1, 1, 0, 0),
 		DOWN (0, 1, 0, 1, 1, 1),
 		LEFT (0, 0, 1, 0, 1, 0),
 		RIGHT(1, 0, 0, 1, 1, 1),
 		FRONT(0, 0, 0, 1, 1, 0), 
 		BACK (1, 0, 1, 0, 1, 1);
-
-
-
-
+		//MIDDLE 
+		//EQUATOR 
+		//STANDING
+		
+		
 		final int x1, y1, z1, x2, y2, z2;
-		private Side(int x1, int y1, int z1, int x2, int y2, int z2){
+
+		private Group(int x1, int y1, int z1, int x2, int y2, int z2){
 			this.x1 = x1;
 			this.y1 = y1;
 			this.z1 = z1;
@@ -104,9 +117,10 @@ class Piece{
 
 	Piece toPosition(int x, int y, int z){
 
-		Piece old  = null;
+		if(parent.isOut(x, y, z))
+			return null;
 
-		= parent.pieces[x][y][z];
+		Piece old = parent.pieces[x][y][z];
 
 		if(old.getType() != getType())
 			throw new IllegalArgumentException("As peças não se equivalem em tipo.");
@@ -174,7 +188,7 @@ class Face{
 	Piece parent;
 	final static short 
 		EMPTY = -1,
-		      YELLOW=0, WHITE=1, GREEN=2, BLUE=3, RED=4, ORANGE=5;
+		      YELLOW=3, WHITE=7, GREEN=2, BLUE=4, RED=1, ORANGE=5;
 	final int directionX, directionY, directionZ;
 	short color;
 
@@ -186,17 +200,12 @@ class Face{
 		nY = parent.positionY + directionY;
 		nZ = parent.positionZ + directionZ;
 
-		try{
-			Piece piece = parent.parent.pieces[nX][nY][nZ];
-			return false;
-		}catch(Exception e){
-			return true;
-		}
+		return parent.parent.isOut(nX, nY, nZ);
 	}
 
 	@Override
 	public String toString() {
-		return String.valueOf(color);
+		return String.format("\033[4%s;1m  \033[m", color);
 	}
 
 	public Face(Piece parent, short color, int directionX, int directionY, int directionZ){
