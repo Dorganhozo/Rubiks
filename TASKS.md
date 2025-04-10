@@ -1,0 +1,2 @@
+- [x] Organizar o projeto
+- [ ] Girar um lado do cubo magico
