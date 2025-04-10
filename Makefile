@@ -1,6 +1,17 @@
-all: Main.class 
-	java -cp build Main
+mainclass=Main
 
 
-Main.class: Main.java
-	javac -d build/ *.java
+all: build/${mainclass}.class 
+	java -cp build ${mainclass}
+
+
+build/${mainclass}.class: src/${mainclass}.java
+	javac -d build -sourcepath src src/${mainclass}.java 
+
+
+
+release: build/${mainclass}.class
+	jar cvfe build/rubiks.jar ${mainclass} -C build .
+
+clean: 
+	rm build/* -rf
