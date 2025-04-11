@@ -11,7 +11,7 @@ all: $(CLASSES)
 
 build/%.class: src/%.java
 	@mkdir -p $(dir $@)
-	javac -d build $< -cp src
+	javac -source 8 -target 8 -d build $< -cp src
 
 
 

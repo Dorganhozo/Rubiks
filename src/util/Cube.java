@@ -31,9 +31,27 @@ public class Cube{
 				return end - start < 0?(dim - 1)-x:x;
 			}
 
-			int x(){ return begin(count%dim, side.x1, side.x2); }
-			int y(){ return begin((z()/dim)%dim, side.y1, side.y2); }
-			int z(){ return begin((count/dim)%dim, side.z1, side.z2); }
+			int x(){ 
+				if(side.x1==side.x2)
+					return side.x2*(dim - 1);
+				return begin(count%dim, side.x1, side.x2); 
+			}
+			int y(){ 
+				if(side.y1==side.y2)
+					return side.y2*(dim - 1);
+
+				return begin((count/dim)%dim, side.y1, side.y2);
+
+			}
+			int z(){
+				if(side.z1==side.z2)
+					return side.z2*(dim - 1);
+				
+				if(side.x1==side.x2)
+					return begin(count%dim, side.z1, side.z2); 
+
+				return begin((count/dim)%dim, side.z1, side.z2); 
+			}
 
 			@Override
 			public Piece next() {
