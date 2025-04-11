@@ -1,16 +1,21 @@
-mainclass=Main
+mainclass := Main
 
 
-all: build/${mainclass}.class 
+SRCS := $(wildcard src/**/*.java src/*.java)
+CLASSES := $(patsubst src/%.java, build/%.class, $(SRCS))
+
+
+all: $(CLASSES)
 	java -cp build ${mainclass}
 
 
-build/${mainclass}.class: src/${mainclass}.java
-	javac -d build -sourcepath src src/${mainclass}.java 
+build/%.class: src/%.java
+	@mkdir -p $(dir $@)
+	javac -d build $< -cp src
 
 
 
-release: build/${mainclass}.class
+release: $(CLASSES) 
 	jar cvfe build/rubiks.jar ${mainclass} -C build .
 
 clean: 

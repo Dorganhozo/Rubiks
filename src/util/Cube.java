@@ -1,6 +1,7 @@
 package util;
-import java.util.Map;
-import util.Piece;
+import java.util.Spliterator;
+import java.util.Iterator;
+
 
 //Um simples cubo com pecinhas
 public class Cube{
@@ -9,8 +10,7 @@ public class Cube{
 	Piece[][][] pieces;
 
 	public Piece getPiece(int x, int y, int z) {
-		//TODO: Use sempre esse metodo quando acessar o objeto Cube!
-    		return pieces[x][y][z];
+		return pieces[x][y][z];
 	}
 
 	public boolean isOut(int x, int y, int z){
@@ -21,28 +21,46 @@ public class Cube{
 		getPiece(x1, y1, z1).toPosition(x2, y2, z2).toPosition(x1, y1, z1);
 	}
 
-	public String getSide(Group side) {
-
-		StringBuilder strb = new StringBuilder();
-		int count=0;
-
-		int dirX, dirY, dirZ;
-
-		dirX = side.x2 - side.x1 < 0? -1 : 1;
-		dirY = side.y2 - side.y1 < 0? -1 : 1;
-		dirZ = side.z2 - side.z1 < 0? -1 : 1;
+	//Lutar pela minha sobrevivencia!!!
+	public Iterable<Piece> getSide(Group side) {
+		final Iterator<Piece> itr = new Iterator<Piece>() {
 		
-		for(int y=side.y1 * (dim -1); y * dirY <= side.y2 * (dim - 1); y+=dirY)
-			for(int z=side.z1 * (dim - 1); z * dirZ <= side.z2 * (dim - 1); z+=dirZ)
-				for(int x=side.x1 * (dim - 1); x * dirX <= side.x2 * (dim - 1); x+=dirX){
-					strb.append(pieces[x][y][z].faces.get(side.name().toLowerCase()));
-					if(++count % dim == 0 && count != dim*dim)
-						strb.append("\n");
-					
+			int count;
 
-				}
+			int begin(int x, int start, int end){
+				return end - start < 0?(dim - 1)-x:x;
+			}
 
-		return strb.toString();
+			int x(){ return begin(count%dim, side.x1, side.x2); }
+			int y(){ return begin((z()/dim)%dim, side.y1, side.y2); }
+			int z(){ return begin((count/dim)%dim, side.z1, side.z2); }
+
+			@Override
+			public Piece next() {
+				Piece piece = getPiece(x(), y(), z());
+
+				count++;
+				
+				return piece;
+			}
+			@Override
+			public boolean hasNext() {
+				 return count < dim*dim;
+			}
+		};
+
+
+		return new Iterable<Piece>() {
+			@Override
+			public Iterator<Piece> iterator() {
+			    return itr;
+			}	
+
+			@Override
+			public Spliterator<Piece> spliterator() {
+			    return null;
+			}
+		};
 	}
 
 	public Cube(int dimension){
@@ -59,7 +77,7 @@ public class Cube{
 					Piece piece = pieces[x][y][z];
 
 
-					for(Face face : piece.faces.values())
+					for(Face face : piece.faces())
 						if(!face.isBreathing())
 							face.color = Face.EMPTY;
 				}
@@ -75,8 +93,8 @@ public class Cube{
 		//MIDDLE 
 		//EQUATOR 
 		//STANDING
-		
-		
+
+
 		final int x1, y1, z1, x2, y2, z2;
 
 		private Group(int x1, int y1, int z1, int x2, int y2, int z2){

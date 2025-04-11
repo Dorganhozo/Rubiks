@@ -6,5 +6,6 @@ import util.Cube;
 public class Magic{
 	static void rotate(Cube cube, Cube.Group group, boolean inverse){
 					
+		
 	}
 }
