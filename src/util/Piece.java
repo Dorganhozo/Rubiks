@@ -1,13 +1,14 @@
 package util;
 import java.util.Map;
+import java.util.Collection;
 import java.util.HashMap;
 
-class Piece{
-	Cube parent;
-	Map<String, Face> faces = new HashMap<>();
-	int positionX, positionY, positionZ;
+public class Piece{
+	public final Cube parent;
+	private Map<String, Face> faces = new HashMap<>();
+	private int positionX, positionY, positionZ;
 
-	Piece toPosition(int x, int y, int z){
+	public Piece toPosition(int x, int y, int z){
 
 		if(parent.isOut(x, y, z))
 			return null;
@@ -27,7 +28,7 @@ class Piece{
 		return old;
 	}
 
-	void verifyFaces(){
+	public void verifyFaces(){
 		Face blocked = null;
 
 
@@ -49,7 +50,7 @@ class Piece{
 			}
 	}
 
-	int getType(){
+	public int getType(){
 		int type = 0;
 
 		for(Face face : faces.values())
@@ -58,6 +59,16 @@ class Piece{
 
 		return type;
 	}
+
+	public Collection<Face> faces(){ return faces.values(); }
+		
+	public Face face(String name){ return faces.get(name); }
+
+	public int getPositionX() { return positionX; }
+
+	public int getPositionY() { return positionY; }
+
+	public int getPositionZ() { return positionZ; }
 
 	public Piece(Cube parent, int x, int y, int z){
 		this.parent = parent;
