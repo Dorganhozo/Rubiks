@@ -6,11 +6,15 @@ import java.util.Iterator;
 //Um simples cubo com pecinhas
 public class Cube{
 	
-	final int dim;
-	Piece[][][] pieces;
+	public final int dim;
+	private Piece[][][] pieces;
 
 	public Piece getPiece(int x, int y, int z) {
 		return pieces[x][y][z];
+	}
+
+	public void setPiece(int x, int y, int z, Piece piece) {
+		pieces[x][y][z] = piece;	
 	}
 
 	public boolean isOut(int x, int y, int z){
@@ -21,10 +25,9 @@ public class Cube{
 		getPiece(x1, y1, z1).toPosition(x2, y2, z2).toPosition(x1, y1, z1);
 	}
 
-	//Lutar pela minha sobrevivencia!!!
+	//TODO: Cria um classe que implementa o Iterable<Pieces>
 	public Iterable<Piece> getSide(Group side) {
 		final Iterator<Piece> itr = new Iterator<Piece>() {
-		
 			int count;
 
 			int begin(int x, int start, int end){
@@ -97,7 +100,7 @@ public class Cube{
 
 					for(Face face : piece.faces())
 						if(!face.isBreathing())
-							face.color = Face.EMPTY;
+							face.setColor(Face.EMPTY);
 				}
 	}
 
@@ -113,7 +116,7 @@ public class Cube{
 		//STANDING
 
 
-		final int x1, y1, z1, x2, y2, z2;
+		public final int x1, y1, z1, x2, y2, z2;
 
 		private Group(int x1, int y1, int z1, int x2, int y2, int z2){
 			this.x1 = x1;

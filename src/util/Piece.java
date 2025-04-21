@@ -13,12 +13,12 @@ public class Piece{
 		if(parent.isOut(x, y, z))
 			return null;
 
-		Piece old = parent.pieces[x][y][z];
+		Piece old = parent.getPiece(x, y, z);
 
 		if(old.getType() != getType())
 			throw new IllegalArgumentException("As peças não se equivalem em tipo.");
 
-		parent.pieces[x][y][z] = this;
+		parent.setPiece(x, y, z, this);
 		positionX = x;
 		positionY = y;
 		positionZ = z;
@@ -33,7 +33,7 @@ public class Piece{
 
 
 		for(Face face : faces.values())
-			if(face.color != Face.EMPTY && !face.isBreathing()){
+			if(face.getColor() != Face.EMPTY && !face.isBreathing()){
 				blocked = face;
 				break;
 			}
@@ -43,9 +43,9 @@ public class Piece{
 
 
 		for(Face face : faces.values())
-			if(face.color == Face.EMPTY && face.isBreathing()){
-				face.color = blocked.color;
-				blocked.color = Face.EMPTY;
+			if(face.getColor() == Face.EMPTY && face.isBreathing()){
+				face.setColor(blocked.getColor());
+				blocked.setColor(Face.EMPTY);
 				break;
 			}
 	}
@@ -54,7 +54,7 @@ public class Piece{
 		int type = 0;
 
 		for(Face face : faces.values())
-			if(face.color != Face.EMPTY)
+			if(face.getColor() != Face.EMPTY)
 				type++;
 
 		return type;
@@ -62,13 +62,18 @@ public class Piece{
 
 	public Collection<Face> faces(){ return faces.values(); }
 		
-	public Face face(String name){ return faces.get(name); }
+	public Face face(String name){ return faces.get(name.toLowerCase()); }
 
 	public int getPositionX() { return positionX; }
 
 	public int getPositionY() { return positionY; }
 
 	public int getPositionZ() { return positionZ; }
+
+	@Override
+	public String toString() {
+		return String.format("(%s, %s, %s)", positionX, positionY, positionZ);
+	}
 
 	public Piece(Cube parent, int x, int y, int z){
 		this.parent = parent;

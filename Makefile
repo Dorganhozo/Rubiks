@@ -1,5 +1,5 @@
 mainclass := Main
-
+java_version := 8
 
 SRCS := $(wildcard src/**/*.java src/*.java)
 CLASSES := $(patsubst src/%.java, build/%.class, $(SRCS))
@@ -11,7 +11,7 @@ all: $(CLASSES)
 
 build/%.class: src/%.java
 	@mkdir -p $(dir $@)
-	javac -source 8 -target 8 -d build $< -cp src
+	javac -source $(java_version) -target $(java_version) -d build $< -cp src
 
 
 
