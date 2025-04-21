@@ -1,15 +1,22 @@
 package util;
+
 public class Face{
 
 	public final Piece parent;
-	final static short 
-		EMPTY = -1,
-		      YELLOW=3, WHITE=7, GREEN=2, BLUE=4, RED=1, ORANGE=5;
-	final int directionX, directionY, directionZ;
-	short color;
+	public final static 
+		short EMPTY = -1, YELLOW=3, WHITE=7, GREEN=2, BLUE=4, RED=1, ORANGE=5;
+	private final int directionX, directionY, directionZ;
+	private short color;
 
+	public short getColor() {
+	    return color;
+	}
 
-	boolean isBreathing(){
+	public void setColor(short color) {
+	    this.color = color;
+	}
+
+	public boolean isBreathing(){
 		int nX, nY, nZ;
 
 		nX = parent.getPositionX() + directionX;
