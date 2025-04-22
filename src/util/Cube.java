@@ -14,7 +14,7 @@ public class Cube{
 	}
 
 	public void setPiece(int x, int y, int z, Piece piece) {
-		pieces[x][y][z] = piece;	
+		pieces[x][y][z] = piece;
 	}
 
 	public boolean isOut(int x, int y, int z){
