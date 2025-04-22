@@ -1,8 +1,7 @@
 package moviment;
 
-import java.util.Arrays;
-
 import util.Cube;
+import util.Flat;
 import util.Piece;
 
 //Reponsavel pelos movimentos do cubo magico
@@ -12,8 +11,33 @@ public class Magic{
 		       RADIANS_180 = Math.toRadians(180),
 		       RADIANS_270 = Math.toRadians(270);
 
-	public static void rotate(Cube cube, Cube.Group group, boolean inverse){				
+	public static void rotate(Flat flat, boolean inverse){
+		Piece[][] temp = new Piece[flat.getDimension()][flat.getDimension()];
+
+		for(int y=0; y < flat.getDimension(); y++)
+			for(int x=0; x < flat.getDimension(); x++){
+				
+				int dx = flat.getDimension()/2 - x;
+				int dy = flat.getDimension()/2 - y;
+
+				if(dx == 0 && dy == 0){
+					temp[x][y] = flat.getPiece(x, y);
+					continue;
+				}
 			
+				double angle = getRadians(dx, dy) + (inverse? RADIANS_90 : -RADIANS_90);
+				double ray = Math.sqrt(dx*dx + dy*dy);
+
+				temp[getX(angle, ray)][getY(angle, ray)] = flat.getPiece(x, y);
+			}
+
+		for(int y=0; y < flat.getDimension(); y++)
+			for(int x=0; x < flat.getDimension(); x++)
+				if(temp[x][y] != null)
+					flat.setPiece(x, y, temp[x][y]);
+	
+
+
 	}
 	private static double getRadians(int dx, int dy){
 		double hypotenuse = Math.sqrt(dx*dx + dy*dy);
