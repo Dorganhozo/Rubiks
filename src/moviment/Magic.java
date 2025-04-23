@@ -1,8 +1,8 @@
 package moviment;
 
-import util.Cube;
-import util.Flat;
-import util.Piece;
+import component.Cube;
+import component.Flat;
+import component.Piece;
 
 //Reponsavel pelos movimentos do cubo magico
 public class Magic{

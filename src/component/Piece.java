@@ -1,4 +1,4 @@
-package util;
+package component;
 import java.util.Map;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,7 +53,7 @@ public class Piece{
 	public int getType(){
 		int type = 0;
 
-		for(Face face : faces.values())
+		for(Face face : faces())
 			if(face.getColor() != Face.EMPTY)
 				type++;
 
