@@ -1,5 +1,5 @@
-package util;
-
+package component;
+ 
 public class Face{
 
 	public final Piece parent;
