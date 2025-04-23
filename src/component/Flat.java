@@ -1,4 +1,4 @@
-package util;
+package component;
 
 import java.util.Arrays;
 

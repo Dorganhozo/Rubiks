@@ -1,4 +1,4 @@
-package util;
+package component;
 import java.util.Spliterator;
 import java.util.Iterator;
 
@@ -84,8 +84,8 @@ public class Cube{
 		};
 	}
 
-	public Cube(int dimension){
-		dim = dimension;
+	public Cube(){
+		dim = 3;
 		pieces = new Piece[dim][dim][dim];
 		for(int z=0; z<dim; z++)
 			for(int y=0; y<dim; y++)
