@@ -1,67 +1,86 @@
 package view;
-import java.util.Arrays;
 import java.util.Scanner;
-import java.util.stream.Stream;
 
 import cli.Command;
 import component.Cube;
+import component.Face;
 import component.Flat;
-import component.Piece;
-import moviment.Magic;
-public class App {
+	import moviment.Magic;
+	public class App {
 
-	private Cube cube;
+		private Cube cube;
+		private Scanner scan;
 
-	public void initialize(){
-		cube = new Cube();
+		public void initialize(){
+			cube = new Cube();
 
-		System.out.println("Welcome to Rubiks!");
-		System.out.println("Type help to see the commands.");
 
-		Scanner scan = new Scanner(System.in);
-		while (true) {
-			System.out.print(": ");
-			String name = scan.next();
-			String[] args = scan.nextLine().trim().split("\\s");
 
-			try{
-				Command command = Command.valueOf(name.toUpperCase());
+			System.out.println("Welcome to Rubiks!");
+			System.out.println("Type help to see the commands.");
+
+			scan = new Scanner(System.in);
+			while (true) {
+				System.out.print(": ");
+				String name = scan.next();
+				String[] args = scan.nextLine().trim().split("\\s");
 
 				try{
-					command.execute(this, args);
-				}catch(Exception e){
-					System.out.println(e.getMessage());
+					Command command = Command.valueOf(name.toUpperCase());
+
+					try{
+						command.execute(this, args);
+					}catch(Exception e){
+						//System.out.println(e.getMessage());
+						e.printStackTrace();
+					}
+				}catch(IllegalArgumentException e){
+					System.err.printf("%s is invalid\n", name);
 				}
-			}catch(IllegalArgumentException e){
-				System.err.printf("%s is invalid\n", name);
+				
+			}
+		
+
+		}
+
+		public void print(Cube.Group group){
+			Flat flat = cube.getSide(group);
+			clear();	
+			for(int y=0; y < cube.dim; y++){
+				for(int x=0; x < cube.dim; x++)
+					if(flat.getPiece(x, y) != null && flat.getPiece(x, y).face(group.name()).getColor() != Face.EMPTY)
+						System.out.print(flat.getPiece(x, y).face(group.name()));
+					else
+						System.out.print("  ");
+				
+				System.out.println();
 			}
 		}
+		
 
-	}
+		public void rotate(String side, boolean inverse){
+			Cube.Group group = Cube.Group.valueOf(side.toUpperCase());
+			Flat flat = new Flat(group, cube);
 
-	public void print(Cube.Group group){
-		int count = 0;
-		System.out.println("\033[H\033[J");
+			Magic.rotate(flat, inverse);
 
-		for(Piece piece : cube.getSide(group)){
-			System.out.print(piece.face(group.name()));
-
-			if(++count % cube.dim == 0)
-				System.out.println();
+			print(group);
 		}
-	}
+
+
+		public void reset(){
+			this.cube = new Cube();
+		}
+		
+
+		public void clear(){
+		//	System.out.println("\033[H\033[J");
+		}
 	
-
-	public void rotate(String side, boolean inverse){
-		Cube.Group group = Cube.Group.valueOf(side.toUpperCase());
-		Flat flat = new Flat(group, cube);
-
-		Magic.rotate(flat, inverse);
-
-		print(group);
-	}
-
-	
+		public void exit() {
+			scan.close();
+			System.exit(0);
+		}
 
 
 

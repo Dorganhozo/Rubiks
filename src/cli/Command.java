@@ -37,14 +37,28 @@ public enum Command{
 				if(!Stream.of(Cube.Group.values()).anyMatch(e->e.name().equalsIgnoreCase(args[0])))	
 					throw new IllegalArgumentException("This side does not exist");	
 
-				app.rotate(args[0], args.length > 2 && args[1].equals("1"));	    
+
+				app.rotate(args[0], args.length >= 2 && args[1].equals("1"));	    
 				
+			}
+		},
+		RESET{
+
+			@Override
+			public void execute(App app, String... args) {
+			   	app.reset(); 
+			}
+		},
+		CLEAR{
+			@Override
+			public void execute(App app, String... args) {
+				app.clear(); 
 			}
 		},
 		EXIT{
 			@Override
 			public void execute(App app, String... args) {
-				System.exit(0);
+				app.exit();
 			}
 		};
 		public abstract void execute(App app, String... args);
