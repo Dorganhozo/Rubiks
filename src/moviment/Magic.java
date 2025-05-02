@@ -1,6 +1,5 @@
 package moviment;
 
-import component.Cube;
 import component.Flat;
 import component.Piece;
 
@@ -11,9 +10,10 @@ public class Magic{
 		       RADIANS_180 = Math.toRadians(180),
 		       RADIANS_270 = Math.toRadians(270);
 
-	public static void rotate(Flat flat, boolean inverse){
+	public static void rotate(Flat flat, boolean counterClockWise){
 		Piece[][] temp = new Piece[flat.getDimension()][flat.getDimension()];
-
+		
+		
 		for(int y=0; y < flat.getDimension(); y++)
 			for(int x=0; x < flat.getDimension(); x++){
 				
@@ -25,9 +25,10 @@ public class Magic{
 					continue;
 				}
 			
-				double angle = getRadians(dx, dy) + (inverse? RADIANS_90 : -RADIANS_90);
+				double angle = getRadians(dx, dy) + (counterClockWise? RADIANS_90 : -RADIANS_90);
 				double ray = Math.sqrt(dx*dx + dy*dy);
 
+				//System.out.printf("(%s %s) => (%s %s)\n", x, y, getX(angle, ray),getY(angle, ray));
 				temp[getX(angle, ray)][getY(angle, ray)] = flat.getPiece(x, y);
 			}
 
@@ -37,6 +38,7 @@ public class Magic{
 					flat.setPiece(x, y, temp[x][y]);
 	
 
+		
 
 	}
 	private static double getRadians(int dx, int dy){

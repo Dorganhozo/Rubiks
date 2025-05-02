@@ -1,6 +1,4 @@
 package component;
-import java.util.Spliterator;
-import java.util.Iterator;
 
 
 //Um simples cubo com pecinhas
@@ -25,63 +23,9 @@ public class Cube{
 		getPiece(x1, y1, z1).toPosition(x2, y2, z2).toPosition(x1, y1, z1);
 	}
 
-	//TODO: Cria um classe que implementa o Iterable<Pieces>
-	public Iterable<Piece> getSide(Group side) {
-		final Iterator<Piece> itr = new Iterator<Piece>() {
-			int count;
+	public Flat getSide(Group side) {
+		return new Flat(side, this);
 
-			int begin(int x, int start, int end){
-				return end - start < 0?(dim - 1)-x:x;
-			}
-
-			int x(){ 
-				if(side.x1==side.x2)
-					return side.x2*(dim - 1);
-				return begin(count%dim, side.x1, side.x2); 
-			}
-			int y(){ 
-				if(side.y1==side.y2)
-					return side.y2*(dim - 1);
-
-				return begin((count/dim)%dim, side.y1, side.y2);
-
-			}
-			int z(){
-				if(side.z1==side.z2)
-					return side.z2*(dim - 1);
-				
-				if(side.x1==side.x2)
-					return begin(count%dim, side.z1, side.z2); 
-
-				return begin((count/dim)%dim, side.z1, side.z2); 
-			}
-
-			@Override
-			public Piece next() {
-				Piece piece = getPiece(x(), y(), z());
-
-				count++;
-				
-				return piece;
-			}
-			@Override
-			public boolean hasNext() {
-				 return count < dim*dim;
-			}
-		};
-
-
-		return new Iterable<Piece>() {
-			@Override
-			public Iterator<Piece> iterator() {
-			    return itr;
-			}	
-
-			@Override
-			public Spliterator<Piece> spliterator() {
-			    return null;
-			}
-		};
 	}
 
 	public Cube(){
@@ -105,20 +49,30 @@ public class Cube{
 	}
 
 	public enum Group{
-		UP   (0, 0, 1, 1, 0, 0),
-		DOWN (0, 1, 0, 1, 1, 1),
-		LEFT (0, 0, 1, 0, 1, 0),
-		RIGHT(1, 0, 0, 1, 1, 1),
-		FRONT(0, 0, 0, 1, 1, 0), 
-		BACK (1, 0, 1, 0, 1, 1);
-		//MIDDLE 
-		//EQUATOR 
-		//STANDING
+		//UP      (0, 0, 0, 1, 0, 1),
+		//DOWN    (0, 1, 0, 1, 1, 1),
+		//LEFT    (0, 0, 0, 0, 1, 1),
+		//RIGHT   (1, 0, 0, 1, 1, 1),
+		//FRONT   (0, 0, 0, 1, 1, 0), 
+		//BACK    (0, 0, 1, 1, 1, 1);
+		//MIDDLE  (.5f, 0, 0, .5f, 1, 1),
+		//EQUATOR (0, .5f, 0, 1, .5f, 1),
+		//STANDING(0, 0, .5f, 1, 1, .5f);
+
+		UP      (0, 0, 1, 1, 0, 0),
+		DOWN    (0, 1, 0, 1, 1, 1),
+		LEFT    (0, 0, 1, 0, 1, 0),
+		RIGHT   (1, 0, 0, 1, 1, 1),
+		FRONT   (0, 0, 0, 1, 1, 0), 
+		BACK    (1, 0, 1, 0, 1, 1);
+		//MIDDLE  (.5f, 0, 1, .5f, 1, 0),
+		//EQUATOR (0, .5f, 0, 1, .5f, 1),
+		//STANDING(1, 0, .5f, 0, 1, .5f);
 
 
-		public final int x1, y1, z1, x2, y2, z2;
+		public final float x1, y1, z1, x2, y2, z2;
 
-		private Group(int x1, int y1, int z1, int x2, int y2, int z2){
+		private Group(float x1, float y1, float z1, float x2, float y2, float z2){
 			this.x1 = x1;
 			this.y1 = y1;
 			this.z1 = z1;

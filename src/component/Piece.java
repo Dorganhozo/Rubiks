@@ -28,11 +28,12 @@ public class Piece{
 		return old;
 	}
 
+	//Corrige isso
 	public void verifyFaces(){
 		Face blocked = null;
 
 
-		for(Face face : faces.values())
+		for(Face face : faces())
 			if(face.getColor() != Face.EMPTY && !face.isBreathing()){
 				blocked = face;
 				break;
@@ -41,13 +42,39 @@ public class Piece{
 		if(blocked == null)
 			return;
 
+		Face free = null;
 
-		for(Face face : faces.values())
+		for(Face face : faces())
 			if(face.getColor() == Face.EMPTY && face.isBreathing()){
-				face.setColor(blocked.getColor());
-				blocked.setColor(Face.EMPTY);
+				free = face;
 				break;
 			}
+
+		
+		if(getType() == 2){
+			free.setColor(blocked.getColor());
+			blocked.setColor(Face.EMPTY);
+			return;
+		}
+
+		//Está errado
+		Face used = null;
+		for(Face face : faces())
+			if(face.getColor() != Face.EMPTY && face.isBreathing()){
+				used = face;
+				break;
+			}
+		
+		free.setColor(used.getColor());
+		//used.setColor(blocked.getColor());
+		blocked.setColor(Face.EMPTY);
+
+
+
+
+
+
+			
 	}
 
 	public int getType(){
