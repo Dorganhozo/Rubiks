@@ -60,13 +60,13 @@ public class Piece{
 		//Está errado
 		Face used = null;
 		for(Face face : faces())
-			if(face.getColor() != Face.EMPTY && face.isBreathing()){
+			if(face.getColor() != Face.EMPTY && face.isBreathing() && !face.isLinked()){
 				used = face;
 				break;
 			}
 		
 		free.setColor(used.getColor());
-		//used.setColor(blocked.getColor());
+		used.setColor(blocked.getColor());
 		blocked.setColor(Face.EMPTY);
 
 
