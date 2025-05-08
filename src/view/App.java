@@ -1,6 +1,5 @@
 package view;
-import java.util.Scanner;
-
+import java.util.Scanner; 
 import cli.Command;
 import component.Cube;
 import component.Face;
@@ -62,7 +61,7 @@ import component.Flat;
 			Cube.Group group = Cube.Group.valueOf(side.toUpperCase());
 			Flat flat = new Flat(group, cube);
 
-			Magic.rotate(flat, inverse);
+			Magic.rotate(side, flat, inverse);			
 
 			print(group);
 		}
@@ -74,7 +73,7 @@ import component.Flat;
 		
 
 		public void clear(){
-		//	System.out.println("\033[H\033[J");
+			System.out.println("\033[H\033[J");
 		}
 	
 		public void exit() {
