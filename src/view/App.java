@@ -1,6 +1,5 @@
 package view;
-import java.util.Scanner;
-
+import java.util.Scanner; 
 import cli.Command;
 import component.Cube;
 import component.Face;
