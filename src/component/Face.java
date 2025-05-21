@@ -36,6 +36,8 @@ public class Face{
 
 	@Override
 	public String toString() {
+		if(color == EMPTY)
+			return "  ";
 		return String.format("\033[4%s;1m  \033[m", color);
 	}
 

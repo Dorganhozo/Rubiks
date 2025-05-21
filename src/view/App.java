@@ -4,7 +4,9 @@ import cli.Command;
 import component.Cube;
 import component.Face;
 import component.Flat;
-	import moviment.Magic;
+import math.ValueReference;
+import math.Vector3;
+import moviment.Magic;
 	public class App {
 
 		private Cube cube;
@@ -12,7 +14,6 @@ import component.Flat;
 
 		public void initialize(){
 			cube = new Cube();
-
 
 
 			System.out.println("Welcome to Rubiks!");
@@ -47,10 +48,8 @@ import component.Flat;
 			clear();	
 			for(int y=0; y < cube.dim; y++){
 				for(int x=0; x < cube.dim; x++)
-					if(flat.getPiece(x, y) != null && flat.getPiece(x, y).face(group.name()).getColor() != Face.EMPTY)
+					if(flat.getPiece(x, y) != null)
 						System.out.print(flat.getPiece(x, y).face(group.name()));
-					else
-						System.out.print("  ");
 				
 				System.out.println();
 			}
@@ -73,7 +72,7 @@ import component.Flat;
 		
 
 		public void clear(){
-			System.out.println("\033[H\033[J");
+			//System.out.println("\033[H\033[J");
 		}
 	
 		public void exit() {

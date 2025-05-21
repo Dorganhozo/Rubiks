@@ -1,3 +1,0 @@
-- [x] Organizar o projeto
-- [x] Criar uma interface cli
-- [x] Girar um lado do cubo magico
