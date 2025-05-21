@@ -1,12 +1,15 @@
 package component;
 import java.util.Map;
+
+import math.Vector3;
+
 import java.util.Collection;
 import java.util.HashMap;
 
 public class Piece{
 	public final Cube parent;
-	private Map<String, Face> faces = new HashMap<>();
-	private int positionX, positionY, positionZ;
+	private Map<String, Face> faces;
+	private Vector3<Integer> position;
 
 	public Piece toPosition(int x, int y, int z){
 
@@ -19,17 +22,14 @@ public class Piece{
 			throw new IllegalArgumentException("As peças não se equivalem em tipo.");
 
 		parent.setPiece(x, y, z, this);
-		positionX = x;
-		positionY = y;
-		positionZ = z;
+		position.set(x, y, z);
 
 		verifyFaces();
 
 		return old;
 	}
 
-	//Corrige isso
-	public void verifyFaces(){
+	private void verifyFaces(){
 		Face blocked = null;
 
 
@@ -57,7 +57,6 @@ public class Piece{
 			return;
 		}
 
-		//Está errado
 		Face used = null;
 		for(Face face : faces())
 			if(face.getColor() != Face.EMPTY && face.isBreathing() && !face.isLinked()){
@@ -68,13 +67,6 @@ public class Piece{
 		free.setColor(used.getColor());
 		used.setColor(blocked.getColor());
 		blocked.setColor(Face.EMPTY);
-
-
-
-
-
-
-			
 	}
 
 	public int getType(){
@@ -91,27 +83,28 @@ public class Piece{
 		
 	public Face face(String name){ return faces.get(name.toLowerCase()); }
 
-	public int getPositionX() { return positionX; }
+	public int getPositionX() { return position.getX(); }
 
-	public int getPositionY() { return positionY; }
+	public int getPositionY() { return position.getY(); }
 
-	public int getPositionZ() { return positionZ; }
+	public int getPositionZ() { return position.getZ(); }
 
 	@Override
 	public String toString() {
-		return String.format("(%s, %s, %s)", positionX, positionY, positionZ);
+		return position.toString();
 	}
 
 	public Piece(Cube parent, int x, int y, int z){
 		this.parent = parent;
-		positionX = x;
-		positionY = y;
-		positionZ = z;
+
+		faces = new HashMap<>();
+
+		position = new Vector3<>(x, y, z);
 
 		faces.put("up", new Face(this, Face.YELLOW, 0, -1, 0));
 		faces.put("down", new Face(this, Face.WHITE, 0, 1, 0));
-		faces.put("left", new Face(this, Face.GREEN, -1, 0, 0));
-		faces.put("right", new Face(this, Face.BLUE, 1, 0, 0));
+		faces.put("left", new Face(this, Face.BLUE, -1, 0, 0));
+		faces.put("right", new Face(this, Face.GREEN, 1, 0, 0));
 		faces.put("front", new Face(this, Face.RED, 0, 0, -1));
 		faces.put("back", new Face(this, Face.ORANGE, 0, 0, 1));
 
