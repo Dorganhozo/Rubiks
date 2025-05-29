@@ -1,14 +1,10 @@
 package moviment;
 
 
-import component.Cube;
-import component.Flat;
-import component.Piece;
-
+import component.Camera;
 //Reponsavel pelos movimentos do cubo magico
 public class Magic{
-	public static void rotate(String side, Flat flat, boolean counterClockWise){
-		Piece[][] temp = new Piece[flat.getDimension()][flat.getDimension()];
+	public static void rotate(Camera camera, boolean counterClockWise){
 		
 		
 	}

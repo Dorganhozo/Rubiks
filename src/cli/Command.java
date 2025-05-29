@@ -2,7 +2,7 @@ package cli;
 
 import java.util.stream.Stream;
 
-import component.Cube;
+import component.Camera.Direction;
 import view.App;
 
 public enum Command{
@@ -20,10 +20,10 @@ public enum Command{
 				if(args.length == 1 && args[0].isBlank())
 					throw new RuntimeException("Empty arguments!");
 
-				if(!Stream.of(Cube.Group.values()).anyMatch(e->e.name().equalsIgnoreCase(args[0])))	
+				if(!Stream.of(Direction.values()).anyMatch(e->e.name().equalsIgnoreCase(args[0])))	
 					throw new IllegalArgumentException("This side does not exist");	
 
-			   	app.print(Cube.Group.valueOf(args[0].toUpperCase())); 
+			   	app.print(); 
 			}
 		},
 		ROTATE{
@@ -34,7 +34,7 @@ public enum Command{
 					throw new RuntimeException("Empty arguments!");
 
 
-				if(!Stream.of(Cube.Group.values()).anyMatch(e->e.name().equalsIgnoreCase(args[0])))	
+				if(!Stream.of(Direction.values()).anyMatch(e->e.name().equalsIgnoreCase(args[0])))	
 					throw new IllegalArgumentException("This side does not exist");	
 
 

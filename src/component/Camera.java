@@ -1,97 +1,185 @@
 package component;
 
-import math.ValueReference;
-import math.Vector2;
+import java.util.Arrays;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 import math.Vector3;
 
 //Isso vai facilitar as coisas
 public class Camera {
 	private Cube cube;
 	private Vector3<Integer>[][] vectors;
+	private Vector3<Integer> direction;
+
+	private Consumer<Boolean> horizontalRotation = this::rotateX, verticalRotation = this::rotateY, inactiveRotation = this::rotateZ;
+
 
 	//TODO: Resolva esse negocio! depth sempre tem que estar perto da camera
+	/*
+	 * 0 a finn
+	 * 2 -> 0
+	 * 2 - 0
+	 * 0 + 0
+	 */
 	private int depth;
-	
-	public void print(String sideName){
 
-		System.out.println(get(1, 1));
+	public void print(Vector3<Integer> direction){
 		for(int y=0; y < cube.dim; y++){
 			for(int x=0; x < cube.dim; x++){
-				Vector3<Integer> position = get(x, y);
-				System.out.print(cube.getPiece(position.getX(), position.getY(), position.getZ()).face(sideName));
+				Vector3<Integer> position = vectors[x][y];
+				System.out.print(cube.getPiece(position).face(direction));
 			}
+
 			System.out.println();
 		}
 	}
 
+
+	public void print(){
+		print(direction);
+	}
+
+	public void rotateHorizontally(boolean counterClockWise){
+		horizontalRotation.accept(counterClockWise);
+
+		Consumer<Boolean> temp = verticalRotation;
+		verticalRotation = inactiveRotation;
+		inactiveRotation = temp;
+
+	}
+
+	public void rotateVertically(boolean counterClockWise){
+		verticalRotation.accept(counterClockWise);
+
+		Consumer<Boolean> temp = horizontalRotation;
+		horizontalRotation = inactiveRotation;
+		inactiveRotation = temp;
+
+	}
+
+
 	public void rotateX(boolean counterClockWise){
-		for(int l=0; l < cube.dim; l++)
-			for(int c=0; c < cube.dim; c++){
-				Vector3<Integer> position = get(c, l);
+
+		for(int y=0; y < cube.dim; y++)
+			for(int x=0; x < cube.dim; x++){
+				Vector3<Integer> position = vectors[x][y];
 				int newX = position.getX(); 
 				int newY = position.getZ();
 
-				if(counterClockWise)
-					newX = (newY + 1) ^ cube.dim;
-				else
-					newY = (newX + 1) ^ cube.dim;
+				int dirX = direction.getX();
+				int dirY = direction.getZ();
 
-				get(c, l).setX(newY);		
-				get(c, l).setZ(newX); 
+
+				if(counterClockWise){
+					newY = (newY + 1) ^ cube.dim;
+					dirY = -dirY;
+				}else{
+					newX = (newX + 1) ^ cube.dim;
+					dirX = -dirX;
+				}
+				position.setX(newY);		
+				position.setZ(newX); 
+
+				direction.setX(dirY);
+				direction.setZ(dirX);
 			}
 	}
 
 	public void rotateY(boolean counterClockWise){
-		for(int l=0; l < cube.dim; l++)
-			for(int c=0; c < cube.dim; c++){
-				Vector3<Integer> position = get(c, l);
+
+		for(int y=0; y < cube.dim; y++)
+			for(int x=0; x < cube.dim; x++){
+				Vector3<Integer> position = vectors[x][y];
 				int newX = position.getY(); 
 				int newY = position.getZ();
 
-				if(!counterClockWise)
-					newX = (newX + 1) ^ cube.dim;
-				else
-					newY = (newY + 1) ^ cube.dim;
+				int dirX = direction.getY();
+				int dirY = direction.getZ();
 
-				get(c, l).setY(newY);		
-				get(c, l).setZ(newX); 
+				if(counterClockWise){
+					newY = (newY + 1) ^ cube.dim;
+					dirY = -dirY;
+				}else{
+					newX = (newX + 1) ^ cube.dim;
+					dirX = -dirX;
+				}
+
+				position.setY(newY);		
+				position.setZ(newX); 
+
+				direction.setY(dirY);
+				direction.setZ(dirX);
 			}
+
+
 	}
 
 	public void rotateZ(boolean counterClockWise){
-		for(int l=0; l < cube.dim; l++)
-			for(int c=0; c < cube.dim; c++){
-				Vector3<Integer> position = get(c, l);
+
+		for(int y=0; y < cube.dim; y++)
+			for(int x=0; x < cube.dim; x++){
+				Vector3<Integer> position = vectors[x][y];
 				int newX = position.getX(); 
 				int newY = position.getY();
 
-				if(counterClockWise)
-					newX = (newX + 1) ^ cube.dim;
-				else
+				int dirX = direction.getX();
+				int dirY = direction.getY();
+
+				if(counterClockWise){
 					newY = (newY + 1) ^ cube.dim;
+					dirY = -dirY;
+				}else{
+					newX = (newX + 1) ^ cube.dim;
+					dirX = -dirX;
+				}
+				position.setX(newY);		
+				position.setY(newX); 
 
-				get(c, l).setX(newY);		
-				get(c, l).setY(newX); 
+				direction.setX(dirY);
+				direction.setY(dirX);
 			}	
+
 	}
 
-
-	private Vector3<Integer> get(int column, int line){
-		return vectors[line][column];
-	}
 
 	public void setDepth(int depth){
 		this.depth = depth;
 	}
 
 
+
+	public enum Direction{
+		UP	(0, -1, 0), 
+		DOWN	(0, 1, 0),
+		LEFT	(-1, 0, 0), 
+		RIGHT	(1, 0, 0), 
+		FRONT	(0, 0, -1), 
+		BACK	(0, 0, 1);
+
+		public final int x, y, z;
+
+		public Vector3<Integer> vect(){
+			return Vector3.of(x, y, z);
+		}
+
+		private Direction(int x, int y, int z){
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
+
+	}
+
+
 	public Camera(Cube cube){
 		this.cube = cube;	
 		this.vectors = new Vector3[cube.dim][cube.dim];
+		this.direction = Direction.FRONT.vect();
 
 		for(int y=0; y < cube.dim; y++)
 			for (int x = 0; x < vectors.length; x++) 
-				this.vectors[y][x] = new Vector3<>(x, y, 0); 
+				this.vectors[x][y] = Vector3.of(x, y, 0); 
 
 	}
 
