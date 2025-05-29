@@ -32,9 +32,12 @@ public class Cube{
 		getPiece(x1, y1, z1).toPosition(x2, y2, z2).toPosition(x1, y1, z1);
 	}
 
-	
 	public Cube(){
-		dim = 3;
+		this(1);
+	}
+	
+	public Cube(int dim){
+		this.dim = dim;
 		pieces = new Piece[dim][dim][dim];
 		for(int z=0; z<dim; z++)
 			for(int y=0; y<dim; y++)

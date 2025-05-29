@@ -5,9 +5,13 @@ import java.util.Objects;
 public class Vector2<T extends Number>{
 	private Number x, y;
 
-	public Vector2(T x, T y){
+	public Vector2(Number x, Number y){
 		this.x = acceptValue(x);
 		this.y = acceptValue(y);
+	}
+
+	public Vector2(Vector2<T> vector2){
+		this(vector2.x, vector2.y);
 	}
 
 	public Vector2(){

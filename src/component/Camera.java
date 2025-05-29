@@ -15,20 +15,32 @@ public class Camera {
 	private Consumer<Boolean> horizontalRotation = this::rotateX, verticalRotation = this::rotateY, inactiveRotation = this::rotateZ;
 
 
-	//TODO: Resolva esse negocio! depth sempre tem que estar perto da camera
-	/*
-	 * 0 a finn
-	 * 2 -> 0
-	 * 2 - 0
-	 * 0 + 0
-	 */
+
 	private int depth;
 
 	public void print(Vector3<Integer> direction){
+
+		int axisIndex = 0;
+
+		Vector3<Integer> first = vectors[0][0], last = vectors[cube.dim-1][cube.dim-1];
+
+		boolean[] axisEquivalences = {
+			first.getX() == last.getX(),
+			first.getY() == last.getY(), 
+			first.getZ() == last.getZ()
+		};
+
+		do if(axisEquivalences[axisIndex])break;
+		while (++axisIndex < axisEquivalences.length);
+
+
 		for(int y=0; y < cube.dim; y++){
 			for(int x=0; x < cube.dim; x++){
-				Vector3<Integer> position = vectors[x][y];
-				System.out.print(cube.getPiece(position).face(direction));
+				int[] position = {vectors[x][y].getX(), vectors[x][y].getY(), vectors[x][y].getZ()};
+
+				position[axisIndex] = Math.abs(position[axisIndex] - depth);	
+				
+				System.out.print(cube.getPiece(position[0], position[1], position[2]).face(direction));
 			}
 
 			System.out.println();
