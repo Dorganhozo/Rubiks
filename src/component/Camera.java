@@ -72,6 +72,17 @@ public class Camera {
 
 
 	public void rotateX(boolean counterClockWise){
+		int dirX = direction.getX();
+		int dirY = direction.getZ();
+
+		if(counterClockWise)
+			dirY = -dirY;
+		else 
+			dirX = -dirX;
+
+		direction.setX(dirY);
+		direction.setZ(dirX);
+	
 
 		for(int y=0; y < cube.dim; y++)
 			for(int x=0; x < cube.dim; x++){
@@ -79,26 +90,30 @@ public class Camera {
 				int newX = position.getX(); 
 				int newY = position.getZ();
 
-				int dirX = direction.getX();
-				int dirY = direction.getZ();
-
-
-				if(counterClockWise){
-					newY = (newY + 1) ^ cube.dim;
-					dirY = -dirY;
-				}else{
-					newX = (newX + 1) ^ cube.dim;
-					dirX = -dirX;
-				}
+				if(counterClockWise)
+					newY = cube.dim - (newY + 1);
+				else
+					newX = cube.dim - (newX + 1);
+				
 				position.setX(newY);		
 				position.setZ(newX); 
 
-				direction.setX(dirY);
-				direction.setZ(dirX);
 			}
 	}
 
 	public void rotateY(boolean counterClockWise){
+
+		int dirX = direction.getY();
+		int dirY = direction.getZ();
+
+		if(counterClockWise)
+			dirY = -dirY;
+		else 
+			dirX = -dirX;
+
+		direction.setY(dirY);
+		direction.setZ(dirX);
+
 
 		for(int y=0; y < cube.dim; y++)
 			for(int x=0; x < cube.dim; x++){
@@ -106,22 +121,15 @@ public class Camera {
 				int newX = position.getY(); 
 				int newY = position.getZ();
 
-				int dirX = direction.getY();
-				int dirY = direction.getZ();
-
-				if(counterClockWise){
-					newY = (newY + 1) ^ cube.dim;
-					dirY = -dirY;
-				}else{
-					newX = (newX + 1) ^ cube.dim;
-					dirX = -dirX;
-				}
+				if(counterClockWise)
+					newY = cube.dim - (newY + 1);
+				else
+					newX = cube.dim - (newX + 1);
+				
 
 				position.setY(newY);		
 				position.setZ(newX); 
 
-				direction.setY(dirY);
-				direction.setZ(dirX);
 			}
 
 
@@ -129,27 +137,32 @@ public class Camera {
 
 	public void rotateZ(boolean counterClockWise){
 
+		int dirX = direction.getX();
+		int dirY = direction.getY();
+
+		if(counterClockWise)
+			dirY = -dirY;
+		else 
+			dirX = -dirX;
+
+		direction.setX(dirY);
+		direction.setY(dirX);
+
 		for(int y=0; y < cube.dim; y++)
 			for(int x=0; x < cube.dim; x++){
 				Vector3<Integer> position = vectors[x][y];
 				int newX = position.getX(); 
 				int newY = position.getY();
 
-				int dirX = direction.getX();
-				int dirY = direction.getY();
+				if(counterClockWise)
+					newY = cube.dim - (newY + 1);
+				else
+					newX = cube.dim - (newX + 1);
 
-				if(counterClockWise){
-					newY = (newY + 1) ^ cube.dim;
-					dirY = -dirY;
-				}else{
-					newX = (newX + 1) ^ cube.dim;
-					dirX = -dirX;
-				}
+
 				position.setX(newY);		
 				position.setY(newX); 
 
-				direction.setX(dirY);
-				direction.setY(dirX);
 			}	
 
 	}
@@ -190,7 +203,7 @@ public class Camera {
 		this.direction = Direction.FRONT.vect();
 
 		for(int y=0; y < cube.dim; y++)
-			for (int x = 0; x < vectors.length; x++) 
+			for (int x = 0; x < cube.dim; x++) 
 				this.vectors[x][y] = Vector3.of(x, y, 0); 
 
 	}

@@ -1,11 +1,9 @@
 package view;
 import java.util.Scanner; 
 import cli.Command;
+import component.Camera;
 import component.Cube;
-import component.Face;
-import math.ValueReference;
-import math.Vector3;
-import moviment.Magic;
+
 	public class App {
 
 		private Cube cube;
@@ -13,7 +11,6 @@ import moviment.Magic;
 
 		public void initialize(){
 			cube = new Cube();
-
 
 			System.out.println("Welcome to Rubiks!");
 			System.out.println("Type help to see the commands.");
@@ -26,11 +23,9 @@ import moviment.Magic;
 
 				try{
 					Command command = Command.valueOf(name.toUpperCase());
-
 					try{
 						command.execute(this, args);
 					}catch(Exception e){
-						//System.out.println(e.getMessage());
 						e.printStackTrace();
 					}
 				}catch(IllegalArgumentException e){
