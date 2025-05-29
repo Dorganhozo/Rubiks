@@ -2,13 +2,14 @@ package component;
 import java.util.Map;
 
 import math.Vector3;
+import component.Camera.Direction;
 
 import java.util.Collection;
 import java.util.HashMap;
 
 public class Piece{
 	public final Cube parent;
-	private Map<String, Face> faces;
+	private Map<Vector3<Integer>, Face> faces;
 	private Vector3<Integer> position;
 
 	public Piece toPosition(int x, int y, int z){
@@ -81,7 +82,8 @@ public class Piece{
 
 	public Collection<Face> faces(){ return faces.values(); }
 		
-	public Face face(String name){ return faces.get(name.toLowerCase()); }
+	public Face face(Vector3<Integer> direction){ return faces.get(direction); }
+	public Face face(Direction direction){ return face(Vector3.of(direction.x, direction.y, direction.z)); }
 
 	public int getPositionX() { return position.getX(); }
 
@@ -101,12 +103,20 @@ public class Piece{
 
 		position = new Vector3<>(x, y, z);
 
-		faces.put("up", new Face(this, Face.YELLOW, 0, -1, 0));
-		faces.put("down", new Face(this, Face.WHITE, 0, 1, 0));
-		faces.put("left", new Face(this, Face.BLUE, -1, 0, 0));
-		faces.put("right", new Face(this, Face.GREEN, 1, 0, 0));
-		faces.put("front", new Face(this, Face.RED, 0, 0, -1));
-		faces.put("back", new Face(this, Face.ORANGE, 0, 0, 1));
+		Face[] faces = {
+			new Face(this, Direction.UP, Face.YELLOW),
+			new Face(this, Direction.DOWN, Face.WHITE),
+			new Face(this, Direction.LEFT, Face.BLUE),
+			new Face(this, Direction.RIGHT, Face.GREEN),
+			new Face(this, Direction.FRONT, Face.RED),
+			new Face(this, Direction.BACK, Face.ORANGE)
+		};
+
+		for(Face face : faces){
+			Vector3<Integer> key = face.getDiretion();
+			this.faces.put(key, face);
+
+		}
 
 	}
 }

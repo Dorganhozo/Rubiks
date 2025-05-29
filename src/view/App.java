@@ -3,7 +3,6 @@ import java.util.Scanner;
 import cli.Command;
 import component.Cube;
 import component.Face;
-import component.Flat;
 import math.ValueReference;
 import math.Vector3;
 import moviment.Magic;
@@ -43,27 +42,10 @@ import moviment.Magic;
 
 		}
 
-		public void print(Cube.Group group){
-			Flat flat = cube.getSide(group);
-			clear();	
-			for(int y=0; y < cube.dim; y++){
-				for(int x=0; x < cube.dim; x++)
-					if(flat.getPiece(x, y) != null)
-						System.out.print(flat.getPiece(x, y).face(group.name()));
-				
-				System.out.println();
-			}
-		}
+		public void print(){ }
 		
 
-		public void rotate(String side, boolean inverse){
-			Cube.Group group = Cube.Group.valueOf(side.toUpperCase());
-			Flat flat = new Flat(group, cube);
-
-			Magic.rotate(side, flat, inverse);			
-
-			print(group);
-		}
+		public void rotate(String side, boolean inverse){ }
 
 
 		public void reset(){

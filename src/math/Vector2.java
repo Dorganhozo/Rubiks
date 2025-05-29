@@ -15,6 +15,10 @@ public class Vector2<T extends Number>{
 		this.y = 0;
 	}
 
+	public static <T extends Number> Vector2<T> of(T x, T y){
+		return new Vector2<T>(x, y);
+	}
+
 	private Number acceptValue(Number value){
 
 		if(value instanceof ValueReference)
@@ -76,6 +80,20 @@ public class Vector2<T extends Number>{
 		return Objects.hash(x, y);
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj)
+			return true;
+		
+		if(!(obj instanceof Vector2))
+			return false;
+
+		Vector2<T> vector = (Vector2<T>)obj;
+
+		return 	vector.getX() == getX() &&
+		        vector.getY() == getY();
+	}
+
 	@Override
 	public String toString() {
 	    return String.format("(%s %s)", x, y);

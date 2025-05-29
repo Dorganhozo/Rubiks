@@ -1,3 +1,4 @@
+import component.Camera.Direction;
 import component.Camera;
 import component.Cube;
 import component.Face;
@@ -7,38 +8,30 @@ public class Main{
 	public static void main(String[] args) throws Exception{
 		Cube cube = new Cube();
 
-		cube.getPiece(0, 2, 0).face("front").setColor(Face.EMPTY);
-		cube.getPiece(1, 2, 0).face("front").setColor(Face.EMPTY);
-		cube.getPiece(2, 2, 0).face("front").setColor(Face.EMPTY);
-
-		cube.getPiece(0, 2, 2).face("back").setColor(Face.EMPTY);
-		cube.getPiece(1, 2, 2).face("back").setColor(Face.EMPTY);
-		cube.getPiece(2, 2, 2).face("back").setColor(Face.EMPTY);
-		
-		cube.getPiece(0, 2, 0).face("left").setColor(Face.EMPTY);
-		cube.getPiece(0, 2, 1).face("left").setColor(Face.EMPTY);
-		cube.getPiece(0, 2, 2).face("left").setColor(Face.EMPTY);
-
-		cube.getPiece(2, 2, 0).face("right").setColor(Face.EMPTY);
-		cube.getPiece(2, 2, 1).face("right").setColor(Face.EMPTY);
-		cube.getPiece(2, 2, 2).face("right").setColor(Face.EMPTY);
 
 
-		cube.getPiece(0, 0, 0).face("up").setColor(Face.EMPTY);
-		cube.getPiece(1, 0, 0).face("up").setColor(Face.EMPTY);
-		cube.getPiece(2, 0, 0).face("up").setColor(Face.EMPTY);
 
+		for (int i = 0; i < cube.dim; i++) {
+			int fin = cube.dim-1;
+			cube.getPiece(i, fin, 0).face(Direction.FRONT).setColor(Face.EMPTY);
+			cube.getPiece(i, fin, fin).face(Direction.BACK).setColor(Face.EMPTY);
+			cube.getPiece(0, fin, i).face(Direction.LEFT).setColor(Face.EMPTY);
+			cube.getPiece(fin, fin, i).face(Direction.RIGHT).setColor(Face.EMPTY);
+			cube.getPiece(i, 0, 0).face(Direction.UP).setColor(Face.EMPTY);
+			cube.getPiece(i, fin, fin).face(Direction.DOWN).setColor(Face.EMPTY);
+		}
 
-		cube.getPiece(0, 2, 2).face("down").setColor(Face.EMPTY);
-		cube.getPiece(1, 2, 2).face("down").setColor(Face.EMPTY);
-		cube.getPiece(2, 2, 2).face("down").setColor(Face.EMPTY);
 
 		Camera camera = new Camera(cube);
-		camera.rotateX(false);
-
-		camera.print("down");
-
-
+		camera.print();
+		camera	.rotateVertically(false);
+		camera.print();
+		camera.rotateHorizontally(true);
+		camera.print();
+		camera	.rotateVertically(false);
+		camera.print();
+		camera	.rotateVertically(false);
+		camera.print();
 		//new App().initialize();	
 
 

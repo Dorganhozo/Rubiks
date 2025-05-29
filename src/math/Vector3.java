@@ -22,14 +22,17 @@ public class Vector3<T extends Number> {
 
 	}
 
-	
-
 	public Vector3(){
 		this.x = 0;
 		this.y = 0;
 		this.z = 0;
 
 	}
+
+	public static <T extends Number> Vector3<T> of(T x, T y, T z){
+		return new Vector3<T>(x, y, z);
+	}
+
 
 	public T getX() {
 		return (T)x;
@@ -75,6 +78,7 @@ public class Vector3<T extends Number> {
 
 
 
+	//TODO: Checar se não é ValueReference ou Não.
 	public ValueReference<T> getReferenceX(){
 		return new ValueReference<T>(this::getX, this::setX);
 	}
@@ -109,6 +113,22 @@ public class Vector3<T extends Number> {
 	public int hashCode() {
 		return Objects.hash(x, y, z);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj)
+			return true;
+		
+		if(!(obj instanceof Vector3))
+			return false;
+
+		Vector3<T> vector = (Vector3<T>)obj;
+
+		return 	vector.getX() == getX() &&
+		        vector.getY() == getY() &&
+			vector.getZ() == getZ();
+	}
+	
 
 	@Override
 	public String toString() {

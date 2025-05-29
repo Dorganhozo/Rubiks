@@ -1,5 +1,6 @@
 package component;
 
+import math.Vector3;
 
 //Um simples cubo com pecinhas
 public class Cube{
@@ -10,9 +11,17 @@ public class Cube{
 	public Piece getPiece(int x, int y, int z) {
 		return pieces[z][y][x];
 	}
-
+	public Piece getPiece(Vector3<Integer> position) {
+		return getPiece(position.getX(), position.getY(), position.getZ());
+	}
+	
 	public void setPiece(int x, int y, int z, Piece piece) {
 		pieces[z][y][x] = piece;
+	}
+
+
+	public void setPiece(Vector3<Integer> position, Piece piece) {
+		setPiece(position.getX(), position.getY(), position.getZ(), piece);
 	}
 
 	public boolean isOut(int x, int y, int z){
@@ -23,11 +32,7 @@ public class Cube{
 		getPiece(x1, y1, z1).toPosition(x2, y2, z2).toPosition(x1, y1, z1);
 	}
 
-	public Flat getSide(Group side) {
-		return new Flat(side, this);
-
-	}
-
+	
 	public Cube(){
 		dim = 3;
 		pieces = new Piece[dim][dim][dim];
@@ -49,25 +54,5 @@ public class Cube{
 				}
 	}
 
-	public enum Group{
-		UP      (0, 0, 1, 1, 0, 0),
-		DOWN    (0, 1, 0, 1, 1, 1),
-		LEFT    (0, 0, 1, 0, 1, 0),
-		RIGHT   (1, 0, 0, 1, 1, 1),
-		FRONT   (0, 0, 0, 1, 1, 0), 
-		BACK    (1, 0, 1, 0, 1, 1);
-		
-		public final float x1, y1, z1, x2, y2, z2;
-
-		private Group(float x1, float y1, float z1, float x2, float y2, float z2){
-			this.x1 = x1;
-			this.y1 = y1;
-			this.z1 = z1;
-			this.x2 = x2;
-			this.y2 = y2;
-			this.z2 = z2;
-		}
-
-	}
-
+	
 }

@@ -1,10 +1,15 @@
 package component;
- 
+
+import java.util.Map;
+import java.util.Map.Entry;
+
+import component.Camera.Direction;
+import math.Vector3;
+
 public class Face{
-	public final Piece parent;
-	public final static 
-		short EMPTY = -1, YELLOW=3, WHITE=7, GREEN=2, BLUE=4, RED=1, ORANGE=5;
-	public final int directionX, directionY, directionZ;
+	private Vector3<Integer> diretion;
+	private Piece parent;
+	public final static short EMPTY = -1, YELLOW=3, WHITE=7, GREEN=2, BLUE=4, RED=1, ORANGE=5;
 	private short color;
 	private boolean linked;
 
@@ -19,12 +24,22 @@ public class Face{
 	public boolean isBreathing(){
 		int nX, nY, nZ;
 
-		nX = parent.getPositionX() + directionX;
-		nY = parent.getPositionY() + directionY;
-		nZ = parent.getPositionZ() + directionZ;
+		nX = getPiece().getPositionX() + getDiretion().getX();
+		nY = getPiece().getPositionY() + getDiretion().getY();
+		nZ = getPiece().getPositionZ() + getDiretion().getZ();
 
-		return parent.parent.isOut(nX, nY, nZ);
+		return getPiece().parent.isOut(nX, nY, nZ);
 	}
+
+	public Piece getPiece(){
+		return parent;	
+	}
+
+	public Vector3<Integer> getDiretion(){
+		return diretion;
+	}
+
+	
 	
 	public boolean isLinked() {
 	    return linked;
@@ -41,11 +56,11 @@ public class Face{
 		return String.format("\033[4%s;1m  \033[m", color);
 	}
 
-	public Face(Piece parent, short color, int directionX, int directionY, int directionZ){
-		this.parent = parent;
+	public Face(Piece piece, Direction direction, short color){
+		this.diretion = Vector3.of(direction.x, direction.y, direction.z);
+		this.parent = piece;
 		this.color = color;
-		this.directionX = directionX;
-		this.directionY = directionY;
-		this.directionZ = directionZ;
 	}
+
+
 }
