@@ -12,6 +12,10 @@ public class Vector3<T extends Number> {
 		this.z = acceptValue(z);
 	}
 
+	public Vector3(Vector3<T> vector3){
+		this(vector3.x, vector3.y, vector3.z);
+	}
+
 	private Number acceptValue(Number value){
 
 		if(value instanceof ValueReference)
@@ -26,6 +30,7 @@ public class Vector3<T extends Number> {
 		this.x = 0;
 		this.y = 0;
 		this.z = 0;
+		
 
 	}
 
