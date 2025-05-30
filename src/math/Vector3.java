@@ -2,29 +2,20 @@ package math;
 
 import java.util.Objects;
 
-public class Vector3<T extends Number> {
+public class Vector3 {
 
-	private Number x, y, z;
+	private int x, y, z;
 
-	public Vector3(Number x, Number y, Number z){
-		this.x = acceptValue(x);
-		this.y = acceptValue(y);
-		this.z = acceptValue(z);
+	public Vector3(int x, int y, int z){
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 
-	public Vector3(Vector3<T> vector3){
+	public Vector3(Vector3 vector3){
 		this(vector3.x, vector3.y, vector3.z);
 	}
 
-	private Number acceptValue(Number value){
-
-		if(value instanceof ValueReference)
-			return ((ValueReference<T>)value);
-
-
-		return (T)value;
-
-	}
 
 	public Vector3(){
 		this.x = 0;
@@ -34,81 +25,37 @@ public class Vector3<T extends Number> {
 
 	}
 
-	public static <T extends Number> Vector3<T> of(T x, T y, T z){
-		return new Vector3<T>(x, y, z);
+	public static Vector3 of(int x, int y, int z){
+		return new Vector3(x, y, z);
 	}
 
 
-	public T getX() {
-		return (T)x;
+	public int getX() {
+		return x;
 	}
 
-	public T getY() {
-		return (T)y;
+	public int getY() {
+		return y;
 	}
 
-	public T getZ() {
-		return (T)z;
+	public int getZ() {
+		return z;
 	}
 
-	public void setX(T value) {
-
-		if(x instanceof ValueReference){
-			((ValueReference<T>)x).set(value);
-			return;
-		} 
-
+	public void setX(int value) {
 		this.x = value;
 	}
 
-	public void setY(T value) {
-		
-		if(y instanceof ValueReference){
-			((ValueReference<T>)y).set(value);
-			return;
-		}
-
+	public void setY(int value) {
 		this.y = value;
 	}
 
-	public void setZ(T value) {
-
-		if(z instanceof ValueReference){
-			((ValueReference<T>)z).set(value);
-			return;
-		}
-
+	public void setZ(int value) {
 		this.z = value;
 	}
 
 
-
-	//TODO: Checar se não é ValueReference ou Não.
-	public ValueReference<T> getReferenceX(){
-		return new ValueReference<T>(this::getX, this::setX);
-	}
-
-	public ValueReference<T> getReferenceY(){
-		return new ValueReference<T>(this::getY, this::setY);
-	}
-
-	public ValueReference<T> getReferenceZ(){
-		return new ValueReference<T>(this::getZ, this::setZ);
-	}
-
-	public void setX(ValueReference<T> value){
-		this.x = value;
-	}
-
-	public void setY(ValueReference<T> value) {
-		this.y = value;
-	}
-
-	public void setZ(ValueReference<T> value) {
-		this.z = value;
-	}
-
-	public void set(T x, T y, T z){
+	public void set(int x, int y, int z){
 		setX(x);
 		setY(y);
 		setZ(z);
@@ -127,7 +74,7 @@ public class Vector3<T extends Number> {
 		if(!(obj instanceof Vector3))
 			return false;
 
-		Vector3<T> vector = (Vector3<T>)obj;
+		Vector3 vector = (Vector3)obj;
 
 		return 	vector.getX() == getX() &&
 		        vector.getY() == getY() &&

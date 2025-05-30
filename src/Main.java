@@ -1,6 +1,6 @@
 import component.Camera;
 import component.Cube;
-import view.App;
+
 
 public class Main{
 	public static void main(String[] args) throws Exception{
@@ -9,6 +9,11 @@ public class Main{
 
 		Cube cube = new Cube(16);
 		Camera c = new Camera(cube);
+		c.print();
+		c.rotateVertically(false);
+		c.print();
+		c.rotateHorizontally(false);
+		c.print();
 		c.rotateVertically(true);
 		c.print();
 
@@ -28,6 +33,10 @@ public class Main{
 
 		//Camera camera = new Camera(cube);
 		//camera.print();
+
+
+
+
 		//new App().initialize();	
 
 

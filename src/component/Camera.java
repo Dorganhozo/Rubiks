@@ -9,8 +9,8 @@ import math.Vector3;
 //Isso vai facilitar as coisas
 public class Camera {
 	private Cube cube;
-	private Vector3<Integer>[][] vectors;
-	private Vector3<Integer> direction;
+	private Vector3[][] vectors;
+	private Vector3 direction;
 
 	private Consumer<Boolean> horizontalRotation = this::rotateX, verticalRotation = this::rotateY, inactiveRotation = this::rotateZ;
 
@@ -18,11 +18,11 @@ public class Camera {
 
 	private int depth;
 
-	public void print(Vector3<Integer> direction){
+	public void print(Vector3 direction){
 
 		int axisIndex = 0;
 
-		Vector3<Integer> first = vectors[0][0], last = vectors[cube.dim-1][cube.dim-1];
+		Vector3 first = vectors[0][0], last = vectors[cube.dim-1][cube.dim-1];
 
 		boolean[] axisEquivalences = {
 			first.getX() == last.getX(),
@@ -86,7 +86,7 @@ public class Camera {
 
 		for(int y=0; y < cube.dim; y++)
 			for(int x=0; x < cube.dim; x++){
-				Vector3<Integer> position = vectors[x][y];
+				Vector3 position = vectors[x][y];
 				int newX = position.getX(); 
 				int newY = position.getZ();
 
@@ -117,7 +117,7 @@ public class Camera {
 
 		for(int y=0; y < cube.dim; y++)
 			for(int x=0; x < cube.dim; x++){
-				Vector3<Integer> position = vectors[x][y];
+				Vector3 position = vectors[x][y];
 				int newX = position.getY(); 
 				int newY = position.getZ();
 
@@ -150,7 +150,7 @@ public class Camera {
 
 		for(int y=0; y < cube.dim; y++)
 			for(int x=0; x < cube.dim; x++){
-				Vector3<Integer> position = vectors[x][y];
+				Vector3 position = vectors[x][y];
 				int newX = position.getX(); 
 				int newY = position.getY();
 
@@ -184,7 +184,7 @@ public class Camera {
 
 		public final int x, y, z;
 
-		public Vector3<Integer> vect(){
+		public Vector3 vect(){
 			return Vector3.of(x, y, z);
 		}
 
