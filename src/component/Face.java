@@ -7,7 +7,7 @@ import component.Camera.Direction;
 import math.Vector3;
 
 public class Face{
-	private Vector3<Integer> diretion;
+	private Vector3 diretion;
 	private Piece parent;
 	public final static short EMPTY = -1, YELLOW=3, WHITE=7, GREEN=2, BLUE=4, RED=1, ORANGE=5;
 	private short color;
@@ -35,7 +35,7 @@ public class Face{
 		return parent;	
 	}
 
-	public Vector3<Integer> getDiretion(){
+	public Vector3 getDiretion(){
 		return diretion;
 	}
 

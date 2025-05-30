@@ -9,8 +9,8 @@ import java.util.HashMap;
 
 public class Piece{
 	public final Cube parent;
-	private Map<Vector3<Integer>, Face> faces;
-	private Vector3<Integer> position;
+	private Map<Vector3, Face> faces;
+	private Vector3 position;
 
 	public Piece toPosition(int x, int y, int z){
 
@@ -82,7 +82,7 @@ public class Piece{
 
 	public Collection<Face> faces(){ return faces.values(); }
 		
-	public Face face(Vector3<Integer> direction){ return faces.get(direction); }
+	public Face face(Vector3 direction){ return faces.get(direction); }
 	public Face face(Direction direction){ return face(Vector3.of(direction.x, direction.y, direction.z)); }
 
 	public int getPositionX() { return position.getX(); }
@@ -101,7 +101,7 @@ public class Piece{
 
 		faces = new HashMap<>();
 
-		position = new Vector3<>(x, y, z);
+		position = new Vector3(x, y, z);
 
 		Face[] faces = {
 			new Face(this, Direction.UP, Face.YELLOW),
@@ -113,7 +113,7 @@ public class Piece{
 		};
 
 		for(Face face : faces){
-			Vector3<Integer> key = face.getDiretion();
+			Vector3 key = face.getDiretion();
 			this.faces.put(key, face);
 
 		}

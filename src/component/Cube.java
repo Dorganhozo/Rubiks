@@ -11,7 +11,7 @@ public class Cube{
 	public Piece getPiece(int x, int y, int z) {
 		return pieces[z][y][x];
 	}
-	public Piece getPiece(Vector3<Integer> position) {
+	public Piece getPiece(Vector3 position) {
 		return getPiece(position.getX(), position.getY(), position.getZ());
 	}
 	
@@ -20,7 +20,7 @@ public class Cube{
 	}
 
 
-	public void setPiece(Vector3<Integer> position, Piece piece) {
+	public void setPiece(Vector3 position, Piece piece) {
 		setPiece(position.getX(), position.getY(), position.getZ(), piece);
 	}
 
