@@ -1,25 +1,27 @@
 package component;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import component.Camera.Direction;
 import math.Vector3;
 
 public class Face{
 	private Vector3 diretion;
 	private Piece parent;
-	public final static short EMPTY = -1, YELLOW=3, WHITE=7, GREEN=2, BLUE=4, RED=1, ORANGE=5;
-	private short color;
+	public static final short EMPTY=0, YELLOW=220, WHITE=15, GREEN=40, BLUE=20, RED=160, ORANGE=130;
+
+	
 	private boolean linked;
 
+	private short color;
+
 	public short getColor() {
-	    return color;
+		return color;
 	}
 
 	public void setColor(short color) {
-	    this.color = color;
+		this.color = color;
 	}
+
+	
 
 	public boolean isBreathing(){
 		int nX, nY, nZ;
@@ -51,9 +53,7 @@ public class Face{
 
 	@Override
 	public String toString() {
-		if(color == EMPTY)
-			return "  ";
-		return String.format("\033[4%s;1m  \033[m", color);
+		return String.format("\033[48;5;%sm  \033[m", color);
 	}
 
 	public Face(Piece piece, Direction direction, short color){
@@ -61,6 +61,8 @@ public class Face{
 		this.parent = piece;
 		this.color = color;
 	}
+
+
 
 
 }
