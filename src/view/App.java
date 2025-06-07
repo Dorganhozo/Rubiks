@@ -1,21 +1,28 @@
 package view;
-import java.util.Scanner; 
+import java.util.Scanner;
+
 import cli.Command;
 import component.Camera;
 import component.Cube;
+import moviment.Magic;
+import component.Camera.Direction;
 
 	public class App {
 
 		private Cube cube;
+		private Camera camera;
 		private Scanner scan;
+		private int dimension;
 
 		public void initialize(){
-			cube = new Cube();
+			dimension = 3;
+			cube = new Cube(dimension);
+			camera = new Camera(cube);
+			scan = new Scanner(System.in);
 
 			System.out.println("Welcome to Rubiks!");
 			System.out.println("Type help to see the commands.");
 
-			scan = new Scanner(System.in);
 			while (true) {
 				System.out.print(": ");
 				String name = scan.next();
@@ -31,32 +38,52 @@ import component.Cube;
 				}catch(IllegalArgumentException e){
 					System.err.printf("%s is invalid\n", name);
 				}
-				
+
 			}
-		
 
 		}
 
-		public void print(){ }
-		
+		public void print(){
+			camera.print();	
+		}
 
-		public void rotate(String side, boolean inverse){ }
+		public void go(String direction){
+
+			switch (direction.toUpperCase()) {
+				case "UP":
+					camera.rotateVertically(false);
+					break;
+				case "DOWN":
+					camera.rotateVertically(true);
+					break;
+				case "LEFT":
+					camera.rotateHorizontally(false);
+					break;
+				case "RIGHT":
+					camera.rotateHorizontally(true);
+					break;
+			}	
+		}
+
+		public void rotate(boolean counterClockWise){
+			Magic.rotate(cube, camera, counterClockWise);
+		}
+
+		public void resize(int dimension) {
+			this.dimension = dimension;
+			reset();
+		}
 
 
 		public void reset(){
-			this.cube = new Cube();
+			this.cube = new Cube(dimension);
 		}
-		
 
-		public void clear(){
-			//System.out.println("\033[H\033[J");
-		}
-	
-		public void exit() {
+		public void close(){
 			scan.close();
 			System.exit(0);
 		}
 
 
 
-}
+	}

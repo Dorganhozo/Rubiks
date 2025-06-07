@@ -1,5 +1,6 @@
 package cli;
 
+import java.util.Scanner;
 import java.util.stream.Stream;
 
 import component.Camera.Direction;
@@ -26,6 +27,17 @@ public enum Command{
 			   	app.print(); 
 			}
 		},
+		GO{
+			@Override
+			public void execute(App app, String... args) {
+				if(args.length == 1 && args[0].isBlank())
+					throw new RuntimeException("Empty arguments!");
+
+				
+
+			   	app.go(args[1]); 
+			}
+		},
 		ROTATE{
 
 			@Override
@@ -33,12 +45,7 @@ public enum Command{
 				if(args.length == 1 && args[0].isBlank())
 					throw new RuntimeException("Empty arguments!");
 
-
-				if(!Stream.of(Direction.values()).anyMatch(e->e.name().equalsIgnoreCase(args[0])))	
-					throw new IllegalArgumentException("This side does not exist");	
-
-
-				app.rotate(args[0], args.length >= 2 && args[1].equals("1"));	    
+				app.rotate(args.length >= 2 && args[1].equals("1"));	    
 				
 			}
 		},
@@ -52,15 +59,17 @@ public enum Command{
 		CLEAR{
 			@Override
 			public void execute(App app, String... args) {
-				app.clear(); 
+				System.out.println("\033[H\033[J");
 			}
 		},
+	
 		EXIT{
 			@Override
 			public void execute(App app, String... args) {
-				app.exit();
+				app.close();
 			}
 		};
+
 		public abstract void execute(App app, String... args);
 
 		

@@ -10,6 +10,7 @@ import math.Vector3;
 public class Camera {
 	private Cube cube;
 	private Vector3[][] vectors;
+
 	private Vector3 direction;
 
 	private Consumer<Boolean> horizontalRotation = this::rotateX, verticalRotation = this::rotateY, inactiveRotation = this::rotateZ;
@@ -18,7 +19,39 @@ public class Camera {
 
 	private int depth;
 
+	public Face[][] getPerspectiveFaces(){
+		Face[][] colors = new Face[vectors.length][vectors.length];
+
+		int axisIndex = 0;
+
+		Vector3 first = vectors[0][0], last = vectors[cube.dim-1][cube.dim-1];
+
+		boolean[] axisEquivalences = {
+			first.getX() == last.getX(),
+			first.getY() == last.getY(), 
+			first.getZ() == last.getZ()
+		};
+
+		do if(axisEquivalences[axisIndex])break;
+		while (++axisIndex < axisEquivalences.length);
+
+
+		for(int y=0; y < cube.dim; y++)
+			for(int x=0; x < cube.dim; x++){
+				int[] position = {vectors[x][y].getX(), vectors[x][y].getY(), vectors[x][y].getZ()};
+
+				position[axisIndex] = Math.abs(position[axisIndex] - depth);	
+				
+				colors[y][x] = cube.getPiece(position[0], position[1], position[2]).face(direction);
+			}
+
+		
+
+		return colors;
+	}
+
 	public void print(Vector3 direction){
+		
 
 		int axisIndex = 0;
 

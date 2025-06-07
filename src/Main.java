@@ -1,25 +1,25 @@
 import component.Camera;
 import component.Cube;
+import component.Piece;
+import component.Face;
+import component.Camera.Direction;
+import static java.lang.Math.*;
+
 
 
 public class Main{
 	public static void main(String[] args) throws Exception{
-
-
-
-		Cube cube = new Cube(16);
-		Camera c = new Camera(cube);
-		c.print();
-		c.rotateVertically(false);
-		c.print();
-		c.rotateHorizontally(false);
-		c.print();
-		c.rotateVertically(true);
-		c.print();
-
-
-		//Cube cube = new Cube(3);
-		//
+		final int dim = 3;
+		Cube cube = new Cube(dim);
+	
+		cube.getPiece(0, 0, 0).face(Direction.FRONT).setColor(Face.EMPTY);
+		cube.getPiece(2, 0, 0).face(Direction.FRONT).setColor(Face.EMPTY);
+		cube.getPiece(1, 1, 0).face(Direction.FRONT).setColor(Face.EMPTY);
+		//cube.getPiece(3, 1, 0).face(Direction.FRONT).setColor(FacEMPTYGE);
+		cube.getPiece(0, 2, 0).face(Direction.FRONT).setColor(Face.EMPTY);
+		cube.getPiece(2, 2, 0).face(Direction.FRONT).setColor(Face.EMPTY);	
+		//cube.getPiece(1, 3, 0).face(Direction.FRONT).setColor(Face.ORANGE);
+		//cube.getPiece(3, 3, 0).face(Direction.FRONT).setColor(Face.ORANGE);	
 		//int fin = cube.dim-1;
 		//for (int i = 0; i < cube.dim; i++) {
 		//	cube.getPiece(i, fin, 0).face(Direction.FRONT).setColor(Face.EMPTY);
@@ -30,6 +30,24 @@ public class Main{
 		//	cube.getPiece(i, fin, fin).face(Direction.DOWN).setColor(Face.EMPTY);
 		//}
 
+
+		Camera c = new Camera(cube);
+
+		Face[][] faces = c.getPerspectiveFaces();
+	
+
+		for(int y=0; y < 16; y++){
+			for (int x = 0; x < 16; x++) {
+				System.out.print(faces[min(y/(16/dim), dim-1)][min(x/(16/dim), dim-1)]);	
+			}
+			System.out.println();
+		}
+		//for(Face[] lines : faces){
+		//	for(Face face : lines)
+		//		System.out.print(face);
+		//	System.out.println();
+
+		//}
 
 		//Camera camera = new Camera(cube);
 		//camera.print();
