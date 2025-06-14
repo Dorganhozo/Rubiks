@@ -6,7 +6,7 @@ import math.Vector3;
 public class Face{
 	private Vector3 diretion;
 	private Piece parent;
-	public static final short EMPTY=0, YELLOW=220, WHITE=15, GREEN=40, BLUE=20, RED=160, ORANGE=130;
+	public static final short EMPTY=0, YELLOW=220, WHITE=15, GREEN=40, BLUE=20, RED=160, ORANGE=208;
 
 	
 	private boolean linked;

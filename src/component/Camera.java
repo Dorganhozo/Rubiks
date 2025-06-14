@@ -1,202 +1,126 @@
 package component;
 
-import java.util.Arrays;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
+import java.util.function.BiConsumer;
 import math.Vector3;
+import math.Vector3.Value;
 
-//Isso vai facilitar as coisas
 public class Camera {
 	private Cube cube;
-	private Vector3[][] vectors;
+	private Vector3[] selection;
 
+	@Deprecated
 	private Vector3 direction;
 
-	private Consumer<Boolean> horizontalRotation = this::rotateX, verticalRotation = this::rotateY, inactiveRotation = this::rotateZ;
+	private BiConsumer<Vector3, Boolean> horizontalRotation = this::rotateX, verticalRotation = this::rotateY, inactiveRotation = this::rotateZ;
 
 
 
 	private int depth;
 
 	public Face[][] getPerspectiveFaces(){
-		Face[][] colors = new Face[vectors.length][vectors.length];
-
-		int axisIndex = 0;
-
-		Vector3 first = vectors[0][0], last = vectors[cube.dim-1][cube.dim-1];
-
-		boolean[] axisEquivalences = {
-			first.getX() == last.getX(),
-			first.getY() == last.getY(), 
-			first.getZ() == last.getZ()
-		};
-
-		do if(axisEquivalences[axisIndex])break;
-		while (++axisIndex < axisEquivalences.length);
+		Face[][] faces = new Face[cube.dim][cube.dim];
 
 
-		for(int y=0; y < cube.dim; y++)
-			for(int x=0; x < cube.dim; x++){
-				int[] position = {vectors[x][y].getX(), vectors[x][y].getY(), vectors[x][y].getZ()};
-
-				position[axisIndex] = Math.abs(position[axisIndex] - depth);	
-				
-				colors[y][x] = cube.getPiece(position[0], position[1], position[2]).face(direction);
-			}
-
-		
-
-		return colors;
-	}
-
-	public void print(Vector3 direction){
-		
-
-		int axisIndex = 0;
-
-		Vector3 first = vectors[0][0], last = vectors[cube.dim-1][cube.dim-1];
+		Vector3 toRight = selection[0].getDirection(selection[1]);
+		Vector3 toDown = selection[0].getDirection(selection[2]);
+		Vector3 position = new Vector3(selection[0]);
 
 		boolean[] axisEquivalences = {
-			first.getX() == last.getX(),
-			first.getY() == last.getY(), 
-			first.getZ() == last.getZ()
+			selection[0].getX() == selection[3].getX(),
+			selection[0].getY() == selection[3].getY(), 
+			selection[0].getZ() == selection[3].getZ()
 		};
 
-		do if(axisEquivalences[axisIndex])break;
-		while (++axisIndex < axisEquivalences.length);
+		Value[] axes = {position.x(), position.y(), position.z()};	
+
+		for(int i=0; i < axes.length; i++)
+			if(axisEquivalences[i])
+				axes[i].set(Math.abs(axes[i].get() - depth));
 
 
-		for(int y=0; y < cube.dim; y++){
-			for(int x=0; x < cube.dim; x++){
-				int[] position = {vectors[x][y].getX(), vectors[x][y].getY(), vectors[x][y].getZ()};
+		for(int j=0; j < cube.dim; j++){
+			for(int i=0; i < cube.dim; i++){
+				if(position.getX() < 0 || position.getX() >= cube.dim)
+					position.setX(selection[0].getX());
 
-				position[axisIndex] = Math.abs(position[axisIndex] - depth);	
-				
-				System.out.print(cube.getPiece(position[0], position[1], position[2]).face(direction));
+				if(position.getY() < 0 || position.getY() >= cube.dim)
+					position.setY(selection[0].getY());
+
+				if(position.getZ() < 0 || position.getZ() >= cube.dim)
+					position.setZ(selection[0].getZ());
+
+				faces[j][i] = cube.getPiece(position.getX(), position.getY(), position.getZ()).face(direction);
+				position.add(toRight);	
+
 			}
-
-			System.out.println();
+			position.add(toDown);
 		}
+		
+
+		return faces;
 	}
 
 
-	public void print(){
-		print(direction);
-	}
 
+	
 	public void rotateHorizontally(boolean counterClockWise){
-		horizontalRotation.accept(counterClockWise);
+		horizontalRotation.accept(direction, counterClockWise);
 
-		Consumer<Boolean> temp = verticalRotation;
+		for(Vector3 vector : selection)
+			horizontalRotation.accept(vector, counterClockWise);
+
+		BiConsumer<Vector3, Boolean> temp = verticalRotation;
 		verticalRotation = inactiveRotation;
 		inactiveRotation = temp;
 
 	}
 
 	public void rotateVertically(boolean counterClockWise){
-		verticalRotation.accept(counterClockWise);
+		verticalRotation.accept(direction, counterClockWise);
 
-		Consumer<Boolean> temp = horizontalRotation;
+		for(Vector3 vector : selection)
+			verticalRotation.accept(vector, counterClockWise);
+
+		BiConsumer<Vector3, Boolean> temp = horizontalRotation;
 		horizontalRotation = inactiveRotation;
 		inactiveRotation = temp;
 
 	}
 
 
-	public void rotateX(boolean counterClockWise){
-		int dirX = direction.getX();
-		int dirY = direction.getZ();
-
-		if(counterClockWise)
-			dirY = -dirY;
-		else 
-			dirX = -dirX;
-
-		direction.setX(dirY);
-		direction.setZ(dirX);
+	public void rotateX(Vector3 vector, boolean counterClockWise){
+		int dim = vector == direction? 1 : cube.dim;
 	
-
-		for(int y=0; y < cube.dim; y++)
-			for(int x=0; x < cube.dim; x++){
-				Vector3 position = vectors[x][y];
-				int newX = position.getX(); 
-				int newY = position.getZ();
-
-				if(counterClockWise)
-					newY = cube.dim - (newY + 1);
-				else
-					newX = cube.dim - (newX + 1);
-				
-				position.setX(newY);		
-				position.setZ(newX); 
-
-			}
+		rotate(vector.x(), vector.z(), dim, counterClockWise);	
+	
 	}
 
-	public void rotateY(boolean counterClockWise){
+	public void rotateY(Vector3 vector, boolean counterClockWise){
+		int dim = vector == direction? 1 : cube.dim;
 
-		int dirX = direction.getY();
-		int dirY = direction.getZ();
-
-		if(counterClockWise)
-			dirY = -dirY;
-		else 
-			dirX = -dirX;
-
-		direction.setY(dirY);
-		direction.setZ(dirX);
-
-
-		for(int y=0; y < cube.dim; y++)
-			for(int x=0; x < cube.dim; x++){
-				Vector3 position = vectors[x][y];
-				int newX = position.getY(); 
-				int newY = position.getZ();
-
-				if(counterClockWise)
-					newY = cube.dim - (newY + 1);
-				else
-					newX = cube.dim - (newX + 1);
-				
-
-				position.setY(newY);		
-				position.setZ(newX); 
-
-			}
-
+		rotate(vector.y(), vector.z(), dim, counterClockWise);
 
 	}
 
-	public void rotateZ(boolean counterClockWise){
+	public void rotateZ(Vector3 vector, boolean counterClockWise){
+		int dim = vector == direction? 1 : cube.dim;
 
-		int dirX = direction.getX();
-		int dirY = direction.getY();
+		rotate(vector.x(), vector.y(), dim, counterClockWise);
+
+	}
+
+
+	private void rotate(Value x, Value y, int dim, boolean counterClockWise){
+		int newX = x.get(); 
+		int newY = y.get();
 
 		if(counterClockWise)
-			dirY = -dirY;
-		else 
-			dirX = -dirX;
+			newY = dim - (newY + 1);
+		else
+			newX = dim - (newX + 1);
 
-		direction.setX(dirY);
-		direction.setY(dirX);
-
-		for(int y=0; y < cube.dim; y++)
-			for(int x=0; x < cube.dim; x++){
-				Vector3 position = vectors[x][y];
-				int newX = position.getX(); 
-				int newY = position.getY();
-
-				if(counterClockWise)
-					newY = cube.dim - (newY + 1);
-				else
-					newX = cube.dim - (newX + 1);
-
-
-				position.setX(newY);		
-				position.setY(newX); 
-
-			}	
+		x.set(newY);		
+		y.set(newX); 
 
 	}
 
@@ -232,12 +156,14 @@ public class Camera {
 
 	public Camera(Cube cube){
 		this.cube = cube;	
-		this.vectors = new Vector3[cube.dim][cube.dim];
 		this.direction = Direction.FRONT.vect();
-
-		for(int y=0; y < cube.dim; y++)
-			for (int x = 0; x < cube.dim; x++) 
-				this.vectors[x][y] = Vector3.of(x, y, 0); 
+		
+		this.selection = new Vector3[]{
+			Vector3.of(0,		0, 		0),
+			Vector3.of(cube.dim-1, 	0, 		0),
+			Vector3.of(0, 		cube.dim-1,	0),
+			Vector3.of(cube.dim-1, 	cube.dim-1, 	0)
+		};
 
 	}
 
