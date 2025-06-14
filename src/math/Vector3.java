@@ -1,6 +1,8 @@
 package math;
 
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class Vector3 {
 
@@ -54,11 +56,66 @@ public class Vector3 {
 		this.z = value;
 	}
 
+	public void addX(int value){
+		setX(getX() + value);
+	}
+
+	public void addY(int value){
+		setY(getY() + value);
+	}
+
+	public void addZ(int value) {
+		setZ(getZ() + value);
+	}
+
+	public Value x(){
+		return new Value(this::getX, this::setX);
+	}
+
+	public Value y(){
+		return new Value(this::getY, this::setY);
+	}
+
+	public Value z(){
+		return new Value(this::getZ, this::setZ);
+	}
+
+	
 
 	public void set(int x, int y, int z){
 		setX(x);
 		setY(y);
 		setZ(z);
+	}
+	public void set(Vector3 vector){
+		set(vector.getX(), vector.getY(), vector.getZ());
+	}
+
+	public void set(int value){
+		setX(value);
+		setY(value);
+		setZ(value);
+	}
+
+	public void add(Vector3 vector){
+		addX(vector.getX());
+		addY(vector.getY());
+		addZ(vector.getZ());
+	}
+
+	public void add(int value){
+		addX(value);
+		addY(value);
+		addZ(value);
+	}
+
+	public Vector3 getDirection(Vector3 dest){
+		int dirX, dirY, dirZ;
+		dirX = (int)Math.signum(dest.x - x);
+		dirY = (int)Math.signum(dest.y - y);
+		dirZ = (int)Math.signum(dest.z - z);
+
+		return Vector3.of(dirX, dirY, dirZ);
 	}
 
 	@Override
@@ -85,6 +142,26 @@ public class Vector3 {
 	@Override
 	public String toString() {
 		return String.format("(%s, %s, %s)", x, y, z);
+	}
+
+
+	public class Value {
+		private Supplier<Integer> getter;
+		private Consumer<Integer> setter;
+		public int get(){
+			return getter.get();
+
+		}
+
+		public void set(int value){
+			setter.accept(value);
+		}
+		
+		private Value(Supplier<Integer> getter, Consumer<Integer> setter){
+			this.getter = getter;
+			this.setter = setter;
+		}
+		
 	}
 
 }
