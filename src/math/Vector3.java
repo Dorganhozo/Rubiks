@@ -103,6 +103,12 @@ public class Vector3 {
 		addZ(vector.getZ());
 	}
 
+	public void subtract(Vector3 vector){
+		addX(-vector.getX());
+	        addY(-vector.getY());
+                addZ(-vector.getZ());
+	}
+
 	public void add(int value){
 		addX(value);
 		addY(value);
