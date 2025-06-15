@@ -32,6 +32,10 @@ public class Cube{
 		getPiece(x1, y1, z1).toPosition(x2, y2, z2).toPosition(x1, y1, z1);
 	}
 
+	public boolean hasOnlyPiece() {
+		return dim == 1;
+	}
+
 	public Cube(){
 		this(1);
 	}
