@@ -1,10 +1,9 @@
-import view.App;
+import view.Prompt;
+
+
 
 public class Main{
 	public static void main(String[] args) throws Exception{
-		new App().initialize();	
-	
-
-	
+		new Prompt().initialize();	
 	}
 }

@@ -1,49 +1,61 @@
 package component;
- 
+
+import component.Camera.Direction;
+import math.Vector3;
+
 public class Face{
-	public final Piece parent;
-	public final static 
-		short EMPTY = -1, YELLOW=3, WHITE=7, GREEN=2, BLUE=4, RED=1, ORANGE=5;
-	public final int directionX, directionY, directionZ;
+	private Vector3 diretion;
+	private Piece parent;
+	public static final short EMPTY=0, YELLOW=220, WHITE=15, GREEN=40, BLUE=20, RED=160, ORANGE=208;
+
+	
 	private short color;
-	private boolean linked;
 
 	public short getColor() {
-	    return color;
+		return color;
 	}
 
 	public void setColor(short color) {
-	    this.color = color;
+		this.color = color;
+	}
+
+	public void setColor(int color){
+		this.color = (short)color;
 	}
 
 	public boolean isBreathing(){
 		int nX, nY, nZ;
 
-		nX = parent.getPositionX() + directionX;
-		nY = parent.getPositionY() + directionY;
-		nZ = parent.getPositionZ() + directionZ;
+		nX = getPiece().getPositionX() + getDiretion().getX();
+		nY = getPiece().getPositionY() + getDiretion().getY();
+		nZ = getPiece().getPositionZ() + getDiretion().getZ();
 
-		return parent.parent.isOut(nX, nY, nZ);
+		return getPiece().parent.isOut(nX, nY, nZ);
 	}
+
+	public Piece getPiece(){
+		return parent;	
+	}
+
+	public Vector3 getDiretion(){
+		return diretion;
+	}
+
 	
-	public boolean isLinked() {
-	    return linked;
-	}
 
-	public void setLinked(boolean linked) {
-	    this.linked = linked;
-	}
 
 	@Override
 	public String toString() {
-		return String.format("\033[4%s;1m  \033[m", color);
+		return String.format("\033[48;5;%sm  \033[m", color);
 	}
 
-	public Face(Piece parent, short color, int directionX, int directionY, int directionZ){
-		this.parent = parent;
+	public Face(Piece piece, Direction direction, short color){
+		this.diretion = Vector3.of(direction.x, direction.y, direction.z);
+		this.parent = piece;
 		this.color = color;
-		this.directionX = directionX;
-		this.directionY = directionY;
-		this.directionZ = directionZ;
 	}
+
+
+
+
 }
