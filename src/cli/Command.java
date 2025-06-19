@@ -45,10 +45,10 @@ public enum Command{
 
 			@Override
 			public void execute(Prompt app, String... args) {
-				if(args.length == 1 && args[0].isBlank())
-					throw new RuntimeException("Empty arguments!");
+				//if(args.length == 1 && args[0].isBlank())
+				//	throw new RuntimeException("Empty arguments!");
 
-				app.rotate(args.length >= 2 && args[1].equals("1"));	    
+				app.rotate(args.length > 0 && args[0].equals("1"));	    
 				
 			}
 		},
