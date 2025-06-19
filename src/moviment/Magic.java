@@ -1,74 +1,59 @@
 package moviment;
 
+import java.util.Collections;
+import java.util.stream.Stream;
 
+import component.Camera;
 import component.Cube;
-import component.Flat;
+import component.Face;
 import component.Piece;
+import component.Camera.Rotation;
+import math.Vector3;
 
 //Reponsavel pelos movimentos do cubo magico
 public class Magic{
-	private static final 
-		double RADIANS_90 = Math.toRadians(90),
-		       RADIANS_180 = Math.toRadians(180),
-		       RADIANS_270 = Math.toRadians(270);
+	public static void rotate(Cube cube, Camera camera, boolean counterClockWise){
+		final Face[][] faces = camera.getPerspectiveFaces();
+		final int numberSides = 4;
+		final int middle = cube.dim/2;
+		final int max = cube.dim - 1;
+		
+		if(camera.isPlaneRotationReversed(counterClockWise))
+				counterClockWise = !counterClockWise;
 
-	public static void rotate(String side, Flat flat, boolean counterClockWise){
-		Piece[][] temp = new Piece[flat.getDimension()][flat.getDimension()];
-		
-		
-		for(int y=0; y < flat.getDimension(); y++)
-			for(int x=0; x < flat.getDimension(); x++){
+		if(cube.hasOnlyPiece()){
+			rotateFaces(faces[0][0].getPiece(), camera.getPlaneRotation(), counterClockWise);
+			return;
+		}
+
+
+
+
+		for(int j=0; j < middle; j++)
+			for(int i=j; i < max - j; i++){
+				final Vector3 begin = faces[j][i].getPiece().getPosition();
+				final Vector3 newPosition = new Vector3(begin);
 				
-				int dx = flat.getDimension()/2 - x;
-				int dy = flat.getDimension()/2 - y;
 
-				Piece piece = flat.getPiece(x, y);
-				piece.face(side).setLinked(true);
-
-				if(dx == 0 && dy == 0){
-					temp[x][y] = piece;
-					continue;
+				for(int count=0; count < numberSides; count++){
+					camera.getPlaneRotation().apply(newPosition, cube.dim, counterClockWise);
+					rotateFaces(cube.getPiece(begin), camera.getPlaneRotation(), counterClockWise);
+					cube.swipePieces(cube.getPiece(newPosition), cube.getPiece(begin));
 				}
-			
-				double angle = getRadians(dx, dy) + (counterClockWise? RADIANS_90 : -RADIANS_90);
-				double ray = Math.sqrt(dx*dx + dy*dy);
+		
 
-				//System.out.printf("(%s %s) => (%s %s)\n", x, y, getX(angle, ray),getY(angle, ray));
-				temp[getX(angle, ray)][getY(angle, ray)] = piece;
 			}
 
-		for(int y=0; y < flat.getDimension(); y++)
-			for(int x=0; x < flat.getDimension(); x++)
-				if(temp[x][y] != null){
-					flat.setPiece(x, y, temp[x][y]);
-					flat.getPiece(x, y).face(side).setLinked(false);
-				}
-
-		
-
-	}
-	private static double getRadians(int dx, int dy){
-		double hypotenuse = Math.sqrt(dx*dx + dy*dy);
-		int adjacentSide = Math.abs(dx);
-		int oppositeSide = Math.abs(dy);
-
-		double cos = adjacentSide/hypotenuse;
-		double sin = oppositeSide/hypotenuse;
-
-		double sumOfRightAngles = 0;
-
-		if(dx < 0 && dy <= 0) sumOfRightAngles = RADIANS_90;
-		if(dx >= 0 && dy <= 0) sumOfRightAngles = RADIANS_180;
-		if(dx > 0 && dy >= 0) sumOfRightAngles = RADIANS_270;
-
-		//Pelo amor de deus não mexa nisso!
-		double remainder = (Math.signum(dx) == Math.signum(dy) ? Math.acos(cos) : Math.asin(sin)) % Math.toRadians(90);
-		
-
-		return sumOfRightAngles + remainder; 
 	}
 
-	private static int getX(double angle, double ray){ return (int)(ray * (1 + (float)Math.sin(angle))); }
+	private static void rotateFaces(Piece piece, Rotation rotation, boolean counterClockWise){
+		for(Face face : piece.faces()){
+			rotation.apply(face.getDiretion(), 1, counterClockWise);
+		}
 
-	private static int getY(double angle, double ray){ return (int)(ray * (1 - (float)Math.cos(angle))); }
+		piece.verifyFaces();
+
+	}
+
+
 }
