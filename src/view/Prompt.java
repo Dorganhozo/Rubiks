@@ -20,8 +20,10 @@ public class Prompt {
 		camera = new Camera(cube);
 		scan = new Scanner(System.in);
 
+
 		System.out.println("Welcome to Rubiks!");
 		System.out.println("Type help to see the commands.");
+		
 
 		while (true) {
 			System.out.print(": ");
@@ -34,6 +36,7 @@ public class Prompt {
 					command.execute(this, args);
 				}catch(Exception e){
 					System.out.println(e.getMessage());
+					e.printStackTrace();
 				}
 			}catch(IllegalArgumentException e){
 				System.err.printf("%s is invalid\n", name);

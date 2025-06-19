@@ -4,16 +4,16 @@ import java.util.Map;
 import math.Vector3;
 import component.Camera.Direction;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
 public class Piece{
 	public final Cube parent;
 	private Map<Vector3, Face> faces;
-	private Vector3 position;
+	private final Vector3 position;
 
 	public Piece toPosition(int x, int y, int z){
-
 		if(parent.isOut(x, y, z))
 			return null;
 
@@ -21,53 +21,24 @@ public class Piece{
 
 		if(old.getType() != getType())
 			throw new IllegalArgumentException("As peças não se equivalem em tipo.");
-
+	
 		parent.setPiece(x, y, z, this);
 		position.set(x, y, z);
 
-		verifyFaces();
 
 		return old;
 	}
 
-	private void verifyFaces(){
-		Face blocked = null;
-
-
-		for(Face face : faces())
-			if(face.getColor() != Face.EMPTY && !face.isBreathing()){
-				blocked = face;
-				break;
-			}
-
-		if(blocked == null)
-			return;
-
-		Face free = null;
-
-		for(Face face : faces())
-			if(face.getColor() == Face.EMPTY && face.isBreathing()){
-				free = face;
-				break;
-			}
-
-		
-		if(getType() == 2){
-			free.setColor(blocked.getColor());
-			blocked.setColor(Face.EMPTY);
-			return;
+	public void verifyFaces(){
+		for(Face face : faces()){
+			Vector3 key = face.getDiretion();
+			this.faces.values().remove(face);
+			this.faces.put(key, face);
 		}
+	}
 
-		Face used = null;
-		for(Face face : faces())
-			if(face.getColor() != Face.EMPTY && face.isBreathing() && !face.isLinked()){
-				used = face;
-				break;
-			}
-		
-		free.setColor(used.getColor());
-		used.setColor(blocked.getColor());
-		blocked.setColor(Face.EMPTY);
+	public Piece toPosition(Vector3 position){
+		return toPosition(position.getX(), position.getY(), position.getZ());
 	}
 
 	public int getType(){
@@ -80,16 +51,21 @@ public class Piece{
 		return type;
 	}
 
-	public Collection<Face> faces(){ return faces.values(); }
+	public Collection<Face> faces(){ return new ArrayList<>(faces.values()); }
 		
 	public Face face(Vector3 direction){ return faces.get(direction); }
-	public Face face(Direction direction){ return face(Vector3.of(direction.x, direction.y, direction.z)); }
+	public Face face(Direction direction){ return face(direction.vect()); }
 
 	public int getPositionX() { return position.getX(); }
 
 	public int getPositionY() { return position.getY(); }
 
 	public int getPositionZ() { return position.getZ(); }
+
+	public Vector3 getPosition(){
+		return new Vector3(position);
+	}
+
 
 	@Override
 	public String toString() {
@@ -102,6 +78,7 @@ public class Piece{
 		faces = new HashMap<>();
 
 		position = new Vector3(x, y, z);
+
 
 		Face[] faces = {
 			new Face(this, Direction.UP, Face.YELLOW),

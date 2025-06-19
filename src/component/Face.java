@@ -9,8 +9,6 @@ public class Face{
 	public static final short EMPTY=0, YELLOW=220, WHITE=15, GREEN=40, BLUE=20, RED=160, ORANGE=208;
 
 	
-	private boolean linked;
-
 	private short color;
 
 	public short getColor() {
@@ -21,7 +19,9 @@ public class Face{
 		this.color = color;
 	}
 
-	
+	public void setColor(int color){
+		this.color = (short)color;
+	}
 
 	public boolean isBreathing(){
 		int nX, nY, nZ;
@@ -42,14 +42,7 @@ public class Face{
 	}
 
 	
-	
-	public boolean isLinked() {
-	    return linked;
-	}
 
-	public void setLinked(boolean linked) {
-	    this.linked = linked;
-	}
 
 	@Override
 	public String toString() {

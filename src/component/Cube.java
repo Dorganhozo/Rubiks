@@ -32,6 +32,13 @@ public class Cube{
 		getPiece(x1, y1, z1).toPosition(x2, y2, z2).toPosition(x1, y1, z1);
 	}
 
+	public void swipePieces(Piece piece1, Piece piece2){
+		swipePieces(
+				piece1.getPositionX(), piece1.getPositionY(), piece1.getPositionZ(), 
+				piece2.getPositionX(), piece2.getPositionY(), piece2.getPositionZ()
+		);
+	}
+
 	public boolean hasOnlyPiece() {
 		return dim == 1;
 	}
@@ -42,13 +49,15 @@ public class Cube{
 	
 	public Cube(int dim){
 		this.dim = dim;
+
+		
 		pieces = new Piece[dim][dim][dim];
 		for(int z=0; z<dim; z++)
 			for(int y=0; y<dim; y++)
 				for(int x=0; x<dim; x++)
 					pieces[z][y][x] = new Piece(this, x, y, z);
-	 
-
+	 	
+	
 		for(int z=0; z<dim; z++)
 			for(int y=0; y<dim; y++)
 				for(int x=0; x<dim; x++){

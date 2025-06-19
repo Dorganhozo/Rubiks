@@ -1,24 +1,21 @@
 package component;
 
-import java.util.function.BiConsumer;
+import java.util.Arrays;
+
 import math.Vector3;
 import math.Vector3.Value;
 
 public class Camera {
 	private Cube cube;
 	private Vector3[] selection;
+	private Vector3 direction;
 
-	private BiConsumer<Vector3, Boolean> horizontalRotation = this::rotateX, verticalRotation = this::rotateY, inactiveRotation = this::rotateZ;
-
-
+	private Rotation horizontalRotation = this::rotateX, verticalRotation = this::rotateY, inactiveRotation = this::rotateZ;
 
 	private int depth;
 
 	public Face[][] getPerspectiveFaces(){
 		Face[][] faces = new Face[cube.dim][cube.dim];
-
-		Vector3 direction = getDirection();
-
 
 		if(cube.hasOnlyPiece()){
 			faces[0][0] = cube.getPiece(0, 0, 0).face(direction);
@@ -30,20 +27,9 @@ public class Camera {
 		Vector3 toDown = selection[0].getDirection(selection[2]);
 		Vector3 position = new Vector3(selection[0]);
 
+		applyDepth(position);
 
-		boolean[] axisEquivalences = {
-			selection[0].getX() == selection[3].getX(),
-			selection[0].getY() == selection[3].getY(), 
-			selection[0].getZ() == selection[3].getZ()
-		};
-
-		Value[] axes = {position.x(), position.y(), position.z()};	
-
-		for(int i=0; i < axes.length; i++)
-			if(axisEquivalences[i])
-				axes[i].set(Math.abs(axes[i].get() - depth));
-
-
+	
 		for(int j=0; j < cube.dim; j++){
 			for(int i=0; i < cube.dim; i++){
 				if(position.getX() < 0 || position.getX() >= cube.dim)
@@ -68,26 +54,17 @@ public class Camera {
 
 
 	public Vector3 getDirection(){
-		Vector3 direction = new Vector3();
-
-		Vector3 begin = positionToSigns(selection[0]);
-		Vector3 end = positionToSigns(selection[3]);
-
-		direction.setX((end.getX() + begin.getX()) / 2);
-		direction.setY((end.getY() + begin.getY()) / 2);
-		direction.setZ((end.getZ() + begin.getZ()) / 2);
-	
-
-		return direction;
+		return new Vector3(direction);
 	}
 
 	private Vector3 positionToSigns(Vector3 position){
 		int x, y, z;
 
-		final int max = cube.dim - 1;
-		x = position.getX()/(!cube.hasOnlyPiece() ? max : 1) * 2 - 1;
-		y = position.getY()/(!cube.hasOnlyPiece() ? max : 1) * 2 - 1;
-		z = position.getZ()/(!cube.hasOnlyPiece() ? max : 1) * 2 - 1;
+		final int max = !cube.hasOnlyPiece() ? cube.dim - 1 : cube.dim;
+		x = position.getX()/max * 2 - 1;
+		y = position.getY()/max * 2 - 1;
+		z = position.getZ()/max * 2 - 1;
+
 		
 		return Vector3.of(x, y, z);
 	}
@@ -95,13 +72,17 @@ public class Camera {
 
 	
 	public void rotateHorizontally(boolean counterClockWise){
+		final int dim = !cube.hasOnlyPiece()? cube.dim : 2;
+		
 		if(isRotationReversed(selection[0], selection[2], horizontalRotation))
 			counterClockWise = !counterClockWise;
 
-		for(Vector3 vector : selection)
-			horizontalRotation.accept(vector, counterClockWise);
+		horizontalRotation.apply(direction, 1, counterClockWise);
 
-		BiConsumer<Vector3, Boolean> temp = verticalRotation;
+		for(Vector3 vector : selection)
+			horizontalRotation.apply(vector, dim, counterClockWise);
+
+		Rotation temp = verticalRotation;
 		verticalRotation = inactiveRotation;
 		inactiveRotation = temp;
 
@@ -111,21 +92,23 @@ public class Camera {
 
 
 	public void rotateVertically(boolean counterClockWise){
+		final int dim = !cube.hasOnlyPiece()? cube.dim : 2;
 
 		if(isRotationReversed(selection[0], selection[1], verticalRotation))
 			counterClockWise = !counterClockWise;
 
+		verticalRotation.apply(direction, 1, counterClockWise);
 
 		for(Vector3 vector : selection)
-			verticalRotation.accept(vector, counterClockWise);
+			verticalRotation.apply(vector, dim, counterClockWise);
 
-		BiConsumer<Vector3, Boolean> temp = horizontalRotation;
+		Rotation temp = horizontalRotation;
 		horizontalRotation = inactiveRotation;
 		inactiveRotation = temp;
 
 	}
 
-	private boolean isRotationReversed(Vector3 corner1, Vector3 corner2, BiConsumer<Vector3, Boolean> rotation){
+	private boolean isRotationReversed(Vector3 corner1, Vector3 corner2, Rotation rotation){
 		corner1 = positionToSigns(corner1);
 		corner2 = positionToSigns(corner2);
 
@@ -136,43 +119,48 @@ public class Camera {
 			
 		);
 
-		rightDirection.subtract(getDirection());
+		rightDirection.subtract(direction);
 
-
-		Vector3 leftTop = selection[0], rightBelow = selection[3];
-		rotation.accept(leftTop, false);
-		rotation.accept(rightBelow, false);
 
 		Vector3 futureDirection = getDirection();
-
-		rotation.accept(leftTop, true);
-		rotation.accept(rightBelow, true);
+		rotation.apply(futureDirection, 1, false);
 
 
 		return !futureDirection.equals(rightDirection);	
 
 	}
 
+
+	public Rotation getPlaneRotation(){
+		return inactiveRotation;
+	}
+
+	public boolean isPlaneRotationReversed(boolean counterClockWise){
+		Vector3 rightPosition = selection[1];
+		Vector3 futurePosition = new Vector3(selection[0]);
+		inactiveRotation.apply(futurePosition, cube.dim, false);
+		return !futurePosition.equals(rightPosition);
+	}
+
 	
-	private void rotateX(Vector3 vector, boolean counterClockWise){
-		rotate(vector.x(), vector.z(), counterClockWise);	
+	private void rotateX(Vector3 vector, int dim, boolean counterClockWise){
+		rotate(vector.x(), vector.z(), dim, counterClockWise);	
 	
 	}
 
-	private void rotateY(Vector3 vector, boolean counterClockWise){
-		rotate(vector.y(), vector.z(), counterClockWise);
+	private void rotateY(Vector3 vector, int dim, boolean counterClockWise){
+		rotate(vector.y(), vector.z(), dim, counterClockWise);
 	}
 
-	private void rotateZ(Vector3 vector, boolean counterClockWise){
-		rotate(vector.x(), vector.y(), counterClockWise);
+	private void rotateZ(Vector3 vector, int dim, boolean counterClockWise){
+		rotate(vector.x(), vector.y(), dim, counterClockWise);
 	}
 
 
-	private void rotate(Value x, Value y, boolean counterClockWise){
+	private void rotate(Value x, Value y, int dim, boolean counterClockWise){
 		int newX = x.get(); 
 		int newY = y.get();
 
-		final int dim = !cube.hasOnlyPiece()? cube.dim : 2;
 
 		if(counterClockWise)
 			newY = dim - (newY + 1);
@@ -187,6 +175,22 @@ public class Camera {
 
 	public void setDepth(int depth){
 		this.depth = depth;
+	}
+
+	public void applyDepth(Vector3 position){
+		boolean[] axisEquivalences = {
+			selection[0].getX() == selection[3].getX(),
+			selection[0].getY() == selection[3].getY(), 
+			selection[0].getZ() == selection[3].getZ()
+		};
+
+		Value[] axes = {position.x(), position.y(), position.z()};	
+
+		for(int i=0; i < axes.length; i++)
+			if(axisEquivalences[i])
+				axes[i].set(Math.abs(axes[i].get() - depth));
+
+
 	}
 
 
@@ -213,18 +217,24 @@ public class Camera {
 
 	}
 
+	public interface Rotation{
+		public void apply(Vector3 vector, int dim, boolean counterClockWise);
+	}
+
 
 	public Camera(Cube cube){
 		this.cube = cube;	
+		this.direction = Direction.FRONT.vect();
 
-		final int max = !cube.hasOnlyPiece()? cube.dim - 1 : 1;
-		
+		final int max = !cube.hasOnlyPiece()? cube.dim - 1 : cube.dim;
 		this.selection = new Vector3[]{
 			Vector3.of(0,		0, 	0),
 			Vector3.of(max, 	0, 	0),
 			Vector3.of(0, 		max,	0),
 			Vector3.of(max, 	max, 	0)
 		};
+
+
 
 	}
 
