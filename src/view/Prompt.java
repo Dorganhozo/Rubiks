@@ -35,7 +35,10 @@ public class Prompt {
 				try{
 					command.execute(this, args);
 				}catch(Exception e){
-					System.out.println(e.getMessage());
+					if(e instanceof IllegalArgumentException){
+						System.out.println(e.getMessage());
+						continue;
+					}
 					e.printStackTrace();
 				}
 			}catch(IllegalArgumentException e){
