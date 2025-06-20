@@ -1,5 +1,6 @@
 # Programa que simula um Cubo Magico no terminal sem interface grafica em java!
-*"Tudo isso começou quando eu fiquei cheio tédio pela falta de internet, sentei na cadeira e fui tentar aplicar minhas habilidades de programação."*
+
+*"Tudo isso começou quando eu fiquei cheio de tédio pela falta de internet, sentei na cadeira e fui tentar aplicar minhas habilidades de programação."*
 
 ## Começando
 Você primeiro tem que baixar o último binário que está em [releases](https://github.com/Dorganhozo/Rubiks/releases).
