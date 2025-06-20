@@ -21,7 +21,7 @@ public class Prompt {
 		scan = new Scanner(System.in);
 
 
-		System.out.println("Welcome to Rubiks!");
+		System.out.println("Welcome to Rubiks v1.1!");
 		System.out.println("Type help to see the commands.");
 		
 
