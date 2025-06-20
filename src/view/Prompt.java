@@ -21,7 +21,7 @@ public class Prompt {
 		scan = new Scanner(System.in);
 
 
-		System.out.println("Welcome to Rubiks!");
+		System.out.println("Welcome to Rubiks v1.1!");
 		System.out.println("Type help to see the commands.");
 		
 
@@ -35,7 +35,10 @@ public class Prompt {
 				try{
 					command.execute(this, args);
 				}catch(Exception e){
-					System.out.println(e.getMessage());
+					if(e instanceof IllegalArgumentException){
+						System.out.println(e.getMessage());
+						continue;
+					}
 					e.printStackTrace();
 				}
 			}catch(IllegalArgumentException e){
