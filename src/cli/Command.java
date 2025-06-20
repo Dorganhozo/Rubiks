@@ -10,7 +10,7 @@ public enum Command{
 		HELP("help?"){
 			@Override
 			public void execute(Prompt app, String... args) {
-				if(args.length == 0){
+				if(args.length == 1 && args[0].isBlank()){
 					System.out.println("Commands:");
 					System.err.println(String.join("\n", Stream.of(values()).map(e -> e.name().toLowerCase()).toList()));
 					return;
