@@ -1,5 +1,6 @@
 package component;
 
+import terminal.Color;
 import math.Vector3;
 
 //Um simples cubo com pecinhas
@@ -65,8 +66,8 @@ public class Cube{
 
 
 					for(Face face : piece.faces())
-						if(!face.isBreathing())
-							face.setColor(Face.EMPTY);
+							if(!face.isBreathing())
+								face.setColor(Color.EMPTY);
 				}
 	}
 

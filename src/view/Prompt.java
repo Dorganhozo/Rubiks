@@ -1,7 +1,7 @@
 package view;
 import java.util.Scanner;
 
-import cli.Command;
+import terminal.Command;
 import component.Camera;
 import component.Cube;
 import component.Face;

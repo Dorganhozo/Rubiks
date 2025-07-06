@@ -1,6 +1,7 @@
 package component;
 import java.util.Map;
 
+import terminal.Color;
 import math.Vector3;
 import component.Camera.Direction;
 
@@ -45,7 +46,7 @@ public class Piece{
 		int type = 0;
 
 		for(Face face : faces())
-			if(face.getColor() != Face.EMPTY)
+			if(face.getColor() != Color.EMPTY)
 				type++;
 
 		return type;
@@ -81,12 +82,12 @@ public class Piece{
 
 
 		Face[] faces = {
-			new Face(this, Direction.UP, Face.YELLOW),
-			new Face(this, Direction.DOWN, Face.WHITE),
-			new Face(this, Direction.LEFT, Face.BLUE),
-			new Face(this, Direction.RIGHT, Face.GREEN),
-			new Face(this, Direction.FRONT, Face.RED),
-			new Face(this, Direction.BACK, Face.ORANGE)
+			new Face(this, Direction.UP, Color.YELLOW),
+			new Face(this, Direction.DOWN, Color.WHITE),
+			new Face(this, Direction.LEFT, Color.BLUE),
+			new Face(this, Direction.RIGHT, Color.GREEN),
+			new Face(this, Direction.FRONT, Color.RED),
+			new Face(this, Direction.BACK, Color.ORANGE)
 		};
 
 		for(Face face : faces){

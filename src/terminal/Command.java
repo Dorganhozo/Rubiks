@@ -1,4 +1,4 @@
-package cli;
+package terminal;
 
 import java.util.Optional;
 import java.util.stream.Stream;
