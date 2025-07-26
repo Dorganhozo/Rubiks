@@ -34,6 +34,7 @@ public class Magic{
 				final Vector3 begin = faces[j][i].getPiece().getPosition();
 				final Vector3 newPosition = new Vector3(begin);
 				
+				
 
 				for(int count=0; count < numberSides; count++){
 					camera.getPlaneRotation().apply(newPosition, cube.dim, counterClockWise);

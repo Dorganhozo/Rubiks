@@ -10,12 +10,25 @@ public class Camera {
 	private Vector3[] selection;
 	private Vector3 direction;
 
+	
 	private Rotation horizontalRotation = this::rotateX, verticalRotation = this::rotateY, inactiveRotation = this::rotateZ;
 
 	private int depth;
 
+	
+	public Flat getPerspectiveFacesNew() {
+		Vector3 toRight = selection[0].getDirection(selection[1]);
+		Vector3 toDown = selection[0].getDirection(selection[2]);
+		Vector3 origin = new Vector3(selection[0]);
+
+		applyDepth(origin);
+
+		return new Flat(cube, origin, toRight, toDown, direction);
+	}
+
 	public Face[][] getPerspectiveFaces(){
 		Face[][] faces = new Face[cube.dim][cube.dim];
+		
 
 		if(cube.hasOnlyPiece()){
 			faces[0][0] = cube.getPiece(0, 0, 0).face(direction);

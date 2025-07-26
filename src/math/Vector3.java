@@ -115,6 +115,12 @@ public class Vector3 {
 		addZ(value);
 	}
 
+	public void multiply(int value){
+		setX(getX() * value);
+		setY(getY() * value);
+		setZ(getZ() * value);
+	}
+
 	public Vector3 getDirection(Vector3 dest){
 		int dirX, dirY, dirZ;
 		dirX = (int)Math.signum(dest.x - x);
