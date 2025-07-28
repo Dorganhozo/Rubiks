@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 
 import view.Motion;
 
+
 public class KeyMapper {
 	private Map<Character, Consumer<Motion>> map = new HashMap<>();
 	
@@ -15,6 +16,7 @@ public class KeyMapper {
 		map.put(character, action);
 	}
 
+	//This method only works on UNIX
 	public void input(Motion context){
 		try{
 			Runtime.getRuntime().exec(new String[]{

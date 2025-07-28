@@ -14,13 +14,17 @@ public class Flat {
 		this.cube = cube;
 	}
 
+	public int getDimesion(){
+		return cube.dim;
+	}
+
 	public Face getFace(int x, int y) {
 		Vector3 toRight = new Vector3(this.toRight);
 		Vector3 toDown = new Vector3(this.toDown);
 		
 		toRight.multiply(x);
 		toDown.multiply(y);
-
+		
 		position.add(toRight);
 		position.add(toDown);
 		

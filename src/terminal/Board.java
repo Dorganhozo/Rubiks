@@ -23,18 +23,21 @@ public class Board {
 	}
 	
 	public void clear(){
+		put(CLEAR_CODE);
+		render();
 		buffer.clear();
-		//buffer.position(CLEAR_CODE.length()+1);
+		
+	}
+
+	public void rewind(){
+		buffer.clear();
 	}
 
 	public void render(){
 		try{
 			buffer.flip();
 			channel.write(buffer);
-			clear();
-			put("\033[20H");
-			buffer.flip();
-			channel.write(buffer);
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -44,6 +47,5 @@ public class Board {
 	public Board(){
 		this.channel = Channels.newChannel(System.out);
 		this.buffer = ByteBuffer.allocate(8192);
-		//put(CLEAR_CODE);
 	}
 }

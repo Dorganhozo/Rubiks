@@ -1,5 +1,6 @@
 package component;
 
+
 import java.util.Arrays;
 
 import math.Vector3;
@@ -16,53 +17,14 @@ public class Camera {
 	private int depth;
 
 	
-	public Flat getPerspectiveFacesNew() {
+	public Flat getPerspectiveFaces() {
 		Vector3 toRight = selection[0].getDirection(selection[1]);
 		Vector3 toDown = selection[0].getDirection(selection[2]);
 		Vector3 origin = new Vector3(selection[0]);
 
 		applyDepth(origin);
 
-		return new Flat(cube, origin, toRight, toDown, direction);
-	}
-
-	public Face[][] getPerspectiveFaces(){
-		Face[][] faces = new Face[cube.dim][cube.dim];
-		
-
-		if(cube.hasOnlyPiece()){
-			faces[0][0] = cube.getPiece(0, 0, 0).face(direction);
-			return faces;
-		}
-
-
-		Vector3 toRight = selection[0].getDirection(selection[1]);
-		Vector3 toDown = selection[0].getDirection(selection[2]);
-		Vector3 position = new Vector3(selection[0]);
-
-		applyDepth(position);
-
-	
-		for(int j=0; j < cube.dim; j++){
-			for(int i=0; i < cube.dim; i++){
-				if(position.getX() < 0 || position.getX() >= cube.dim)
-					position.setX(selection[0].getX());
-
-				if(position.getY() < 0 || position.getY() >= cube.dim)
-					position.setY(selection[0].getY());
-
-				if(position.getZ() < 0 || position.getZ() >= cube.dim)
-					position.setZ(selection[0].getZ());
-
-				faces[j][i] = cube.getPiece(position.getX(), position.getY(), position.getZ()).face(direction);
-				position.add(toRight);	
-
-			}
-			position.add(toDown);
-		}
-		
-
-		return faces;
+		return new Flat(cube, origin, toRight, toDown, getDirection());
 	}
 
 

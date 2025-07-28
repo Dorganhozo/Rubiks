@@ -7,6 +7,7 @@ import component.Cube;
 import component.Face;
 import component.Camera.Direction;
 import moviment.Magic;
+import component.Flat;
 
 public class Prompt {
 
@@ -50,12 +51,12 @@ public class Prompt {
 	}
 
 	public void print(){
-		Face[][] faces = camera.getPerspectiveFaces();
+		Flat faces = camera.getPerspectiveFaces();
 
-		for(Face[] line : faces){
-			for (Face face : line) {
-				System.out.print(face);	
-			}
+	
+		for(int y=0; y < faces.getDimesion(); y++){
+			for(int x=0; x < faces.getDimesion(); x++)
+				System.out.print(faces.getFace(x, y));
 			System.out.println();
 		}
 	}

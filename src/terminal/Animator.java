@@ -1,19 +1,87 @@
 package terminal;
 
 import component.Face;
+import component.Flat;
+
 import java.lang.Math;
+import java.util.concurrent.TimeUnit;
+
 import static java.lang.Math.*;
 
 public class Animator {
-	private static Color getColor(int x, int y, Face[][] flat) {
+	private final static int INTERVAL = 1;
+	private static Color getColor(int x, int y, Flat flat) {
 		if(x < 0 || x > 16 || y < 0 || y > 16)
 			return Color.EMPTY;
 
-		return flat[(int)floor(min(abs(y) / (16 / flat.length), flat.length - 1))][(int)floor(min(abs(x) / (16 / flat.length), flat.length - 1))].getColor();
+		int column = (int)floor(min(abs(x) / (16 / flat.getDimesion()), flat.getDimesion() - 1));
+		int line = (int)floor(min(abs(y - 1) / (16 / flat.getDimesion()), flat.getDimesion() - 1));
+
+		return flat.getFace(column, line).getColor();
 	}
 
-	public static void drawHorizontallyRotation(Face[][] flatA, Face[][] flatB, boolean otherSide, double angle, Board board){ 
+
+	public static void startHorizontallyRotation(Flat a, Flat b, boolean otherSide, Board board) {
 		board.clear();
+
+		int begin = 0;
+		int end = 90;
+
+		if(!otherSide){
+			begin = -90;
+			end = 0;
+		}
+
+		for (int angle=begin; angle <= end; angle++) {
+			drawHorizontallyRotation(a, b, Math.toRadians(Math.abs(angle)), board);	
+
+			try{
+
+				TimeUnit.MILLISECONDS.sleep(INTERVAL);
+			}catch(Exception e){}
+				
+		}
+	}
+
+	public static void startVerticallyRotation(Flat a, Flat b, boolean otherSide, Board board){
+		board.clear();
+
+		int begin = 0;
+		int end = 90;
+
+		if(!otherSide){
+			begin = -90;
+			end = 0;
+		}
+
+		for(int angle=begin; angle <= end; angle++){
+			drawVerticallyRotation(a, b, Math.toRadians(Math.abs(angle)), board);
+
+			try{
+				TimeUnit.MILLISECONDS.sleep(INTERVAL);
+			}catch(Exception e){}
+		}
+	}
+
+	public static void startPlaneRotation(Flat flat, boolean counterClockWise, Board board){
+		board.clear();
+		int increment = 1;
+		if(counterClockWise)
+			increment = -1;		
+
+		for(int angle=0; Math.abs(angle) <= 90; angle+=increment){
+			drawPlaneRotation(flat, Math.toRadians(angle), board);
+
+			try{
+				TimeUnit.MILLISECONDS.sleep(INTERVAL);
+			}catch(Exception e){}
+
+		}
+	}
+
+
+	private static void drawHorizontallyRotation(Flat flatA, Flat flatB, double angle, Board board){ 
+		board.rewind();
 		for (int j = 0; j < 16; j++) {
 			for (int i = 0; i < 16; i++) {
 				board.pixel(getA(i, 16, angle), j, getColor(i, j, flatA));
@@ -21,19 +89,19 @@ public class Animator {
 		}
 
 		board.render();
-		board.clear();
+		board.rewind();
 
 		for (int j = 0; j < 16; j++) {
 			for (int i = 0; i < 16; i++) {
-				board.pixel(getB(i, 16, angle), j, getColor(i, j, flatB));
+				board.pixel(getB(i, 16, angle), j, getColor(16 - i, j, flatB));
 			}
 		}
 		board.render();
 
 	}
 
-	public static void drawVerticallyRotation(Face[][] flatA, Face[][] flatB, boolean otherSide, double angle, Board board){
-		board.clear();
+	private static void drawVerticallyRotation(Flat flatA, Flat flatB, double angle, Board board){
+		board.rewind();
 		for (int j = 0; j < 16; j++) {
 			for (int i = 0; i < 16; i++) {
 				board.pixel(i, getA(j, 16, angle), getColor(i, j, flatA));
@@ -41,11 +109,11 @@ public class Animator {
 		}
 
 		board.render();
-		board.clear();
+		board.rewind();
 
 		for (int j = 0; j < 16; j++) {
 			for (int i = 0; i < 16; i++) {
-				board.pixel(i, getB(j, 16, angle), getColor(i, j, flatB));
+				board.pixel(i, getB(j, 16, angle), getColor(i, 16 - j, flatB));
 			}
 		}
 		board.render();
@@ -53,14 +121,14 @@ public class Animator {
 
 	}
 
-	public static void drawPlaneRotation(Face[][] flat, boolean counterClockwise, double angle, Board board){ 
-		board.clear();
+	private static void drawPlaneRotation(Flat flat, double angle, Board board){ 
+		board.rewind();
 		for (int j = 0; j < 16; j++) {
 			for (int i = 0; i < 16; i++) {
 				int x = (int)((-16/2 + i) * cos(angle) + (-16/2 + j) * sin(angle) + 16/2);
 				int y = (int)((-16/2 + i) * sin(angle) - (-16/2 + j) * cos(angle) + 16/2);
 
-				board.pixel(i, j, getColor(x, y, flat));
+				board.pixel(i, j, getColor(x, 16 - y, flat));
 			}
 		}
 		board.render();
