@@ -23,3 +23,4 @@ Se quiser listar todos os comandos use `help`.
 >help também pode mostrar instruções de comandos usando `help <nome_do_comando>`.
 
 Comando exit encerra o programa.
+
