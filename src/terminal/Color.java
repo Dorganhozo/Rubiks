@@ -15,7 +15,7 @@ public enum Color {
 	public String toString() {
 		if(rgb == null)
 			return "";
-		return String.format("%s;%s;%s", rgb[0], rgb[1], rgb[2]);
+		return String.format("%03d;%03d;%03d", rgb[0], rgb[1], rgb[2]);
 	}
 
 	private Color(int red, int green, int blue){

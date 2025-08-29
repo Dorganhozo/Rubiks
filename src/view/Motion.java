@@ -24,6 +24,8 @@ public class Motion {
 		mapper = new KeyMapper();
 		board = new Board();
 
+		//board.pixel(0, 0, Color.WHITE);
+		//board.render();
 
 		mapper.bind('a', (e)->{
 			Flat past = camera.getPerspectiveFaces();

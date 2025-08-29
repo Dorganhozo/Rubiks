@@ -3,16 +3,25 @@ package terminal;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
+import java.util.Arrays;
 
 
 public class Board {
 	private WritableByteChannel channel;
 	private ByteBuffer buffer;
 	private String CLEAR_CODE = "\033[H\033[J";
+	private final int RESOLUTION = 16;
+	private final int PIXEL_CODE_LENGTH = 32;
 
 	public void pixel(int x, int y, Color color){
-		if(x >= 0 && y >= 0 && x < 16 && y < 16)
-			put(String.format("\033[%s;%sH\033[48;2;%sm  \033[m", 1 + y, 1 + 2 * x , color));	
+		//n = width * y + x 
+		if(x >= 0 && y >= 0 && x < RESOLUTION && y < RESOLUTION){
+			int column = 1 + 2 * x;
+			int line = 1 + y;
+
+			String code = String.format("\033[%02d;%02dH\033[48;2;%sm  \033[m", line, column, color);
+			put(code);	
+		}
 	}
 
 	private void put(String code){
@@ -21,12 +30,13 @@ public class Board {
 			for (int i = 0; i < min; i++) 
 				buffer.put((byte)code.charAt(i));	
 	}
+
+	private void insert(String code, int position){
+	}
 	
 	public void clear(){
-		put(CLEAR_CODE);
-		render();
+		System.out.println(CLEAR_CODE);
 		buffer.clear();
-		
 	}
 
 	public void rewind(){
@@ -46,6 +56,6 @@ public class Board {
 
 	public Board(){
 		this.channel = Channels.newChannel(System.out);
-		this.buffer = ByteBuffer.allocate(8192);
+		this.buffer = ByteBuffer.allocate(RESOLUTION*RESOLUTION*PIXEL_CODE_LENGTH);
 	}
 }
