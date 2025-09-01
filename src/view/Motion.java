@@ -1,13 +1,15 @@
 package view;
 
+import java.util.Arrays;
+
 import component.Camera;
 import component.Cube;
-import component.Face;
 import component.Flat;
 import terminal.Animator;
 import terminal.Board;
 import terminal.Color;
 import terminal.KeyMapper;
+import terminal.Unix;
 import moviment.Magic;
 
 public class Motion {
@@ -22,10 +24,11 @@ public class Motion {
 		cube = new Cube(dimension);
 		camera = new Camera(cube);
 		mapper = new KeyMapper();
-		board = new Board();
+		board = new Board(resolution, resolution);
 
-		//board.pixel(0, 0, Color.WHITE);
-		//board.render();
+
+
+
 
 		mapper.bind('a', (e)->{
 			Flat past = camera.getPerspectiveFaces();
@@ -75,10 +78,12 @@ public class Motion {
 		});
 
 		mapper.bind('q', (e)->{
+			board.unhideCursor();
 			System.exit(0);
 		});
 
 
+		board.hideCursor();
 		while(true){
 			Flat currentFaces = camera.getPerspectiveFaces();
 			

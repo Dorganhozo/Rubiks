@@ -19,16 +19,11 @@ public class KeyMapper {
 	//This method only works on UNIX
 	public void input(Motion context){
 		try{
-			Runtime.getRuntime().exec(new String[]{
-				"/bin/sh", "-c", "stty raw -echo < /dev/tty"
-			}).waitFor();
+			Unix.rawMode();
 
 			Consumer<Motion> action = map.get((char)System.in.read());
 
-			Runtime.getRuntime().exec(new String[]{
-				"/bin/sh", "-c", "stty sane < /dev/tty"
-			}).waitFor();
-
+			Unix.normalMode();
 
 			if(action == null)
 				return;
