@@ -7,7 +7,9 @@ import component.Cube;
 import component.Flat;
 import terminal.Animator;
 import terminal.Board;
+import terminal.Color;
 import terminal.KeyMapper;
+import terminal.Unix;
 import moviment.Magic;
 
 public class Motion {
@@ -16,13 +18,22 @@ public class Motion {
 	private KeyMapper mapper;
 	private Board board;
 	private int dimension = 3;
-	private int resolution = 16;
+	private int proportion = 16;
+	private int resolution = 32;
 
 	public void initialize() {
 		cube = new Cube(dimension);
 		camera = new Camera(cube);
 		mapper = new KeyMapper();
-		board = new Board(resolution, resolution);
+
+		
+		int[] size = Unix.getTerminalSize();
+
+		resolution = Math.min(size[0], size[1]);
+
+		board = new Board(0, 0, resolution, resolution);
+
+		
 
 
 
@@ -31,7 +42,7 @@ public class Motion {
 			camera.rotateHorizontally(false);
 			Flat current = camera.getPerspectiveFaces();
 
-			Animator.startHorizontallyRotation(current, past, false, board);
+			Animator.startHorizontallyRotation(current, past, false, this);
 		});
 
 		mapper.bind('d', (e)->{
@@ -40,7 +51,7 @@ public class Motion {
 
 			Flat current = camera.getPerspectiveFaces();
 
-			Animator.startHorizontallyRotation(past, current, true, board);
+			Animator.startHorizontallyRotation(past, current, true, this);
 
 		});
 
@@ -49,7 +60,7 @@ public class Motion {
 			camera.rotateVertically(false);
 			Flat current = camera.getPerspectiveFaces();
 
-			Animator.startVerticallyRotation(current, past, false, board);
+			Animator.startVerticallyRotation(current, past, false, this);
 		});
 
 
@@ -59,17 +70,17 @@ public class Motion {
 			camera.rotateVertically(true);
 			Flat current = camera.getPerspectiveFaces();
 
-			Animator.startVerticallyRotation(past, current, true, board);
+			Animator.startVerticallyRotation(past, current, true, this);
 		});
 
 
 		mapper.bind('r', (e)->{
-			Animator.startPlaneRotation(camera.getPerspectiveFaces(), false, board);
+			Animator.startPlaneRotation(camera.getPerspectiveFaces(), false, this);
 			Magic.rotate(cube, camera, false);
 		});
 
 		mapper.bind('R', (e)->{
-			Animator.startPlaneRotation(camera.getPerspectiveFaces(), true, board);
+			Animator.startPlaneRotation(camera.getPerspectiveFaces(), true, this);
 			Magic.rotate(cube, camera, true);
 		});
 
@@ -85,14 +96,28 @@ public class Motion {
 			
 			board.clear();
 
-			for(int y=0; y < resolution; y++)
-				for(int x=0; x < resolution; x++){
-					int i = Math.min(x / ( resolution/ cube.dim), cube.dim-1);
-					int j = Math.min(y / ( resolution/ cube.dim), cube.dim - 1);
-					board.pixel(x, y, currentFaces.getFace(i, j).getColor());
+
+			for(int y=0; y < proportion; y++)
+				for(int x=0; x < proportion; x++){
+					int i = Math.min(x / ( proportion/ cube.dim), cube.dim - 1);
+					int j = Math.min(y / ( proportion/ cube.dim), cube.dim - 1);
+					board.pixel(x + resolution/2 - proportion/2, y + resolution/2 - proportion/2, currentFaces.getFace(i, j).getColor());
 				}
+
+
 			board.render();
 			mapper.input(this);
 		}
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	public int getProportion() {
+		return proportion;
+	}
+	public int getResolution() {
+		return resolution;
 	}
 }
