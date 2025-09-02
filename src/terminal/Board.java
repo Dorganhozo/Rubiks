@@ -13,23 +13,38 @@ public class Board {
 	private final static String HIDE_CURSOR_CODE ="\033[?25l";
 	private final static String UNHIDE_CURSOR_CODE ="\033[?25r";
 	private final int PIXEL_CODE_LENGTH = 32;
+	private final ByteBuffer[] bucket;
 	 
 	private int width, height;
 
 
 	public void pixel(int x, int y, Color color){
 
+		if(color == Color.EMPTY)
+			return;
+
 		if(x >= 0 && y >= 0 && x < width && y < height){
 			int column = 1 + 2 * x;
 			int line = 1 + y;
 
+			int position = width * y + x;
+
 			String code = String.format("\033[%02d;%02dH\033[48;2;%sm  \033[m", line, column, color);
-			put(code);
+
+
+			if(bucket[position] == null){
+				bucket[position] = buffer.slice(buffer.position(), PIXEL_CODE_LENGTH);
+				put(code, buffer);
+			}else{
+				put(code, bucket[position]);
+
+			}
+
 		}
 	}
 
 
-	private void put(String code){
+	private void put(String code, ByteBuffer buffer){
 		int min = Math.min(code.length(), buffer.remaining());
 		for (int i = 0; i < min; i++) 
 			buffer.put((byte)code.charAt(i));	
@@ -62,6 +77,8 @@ public class Board {
 			buffer.flip();
 			channel.write(buffer);
 			buffer.clear();
+			Arrays.fill(bucket, null);
+
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -72,6 +89,7 @@ public class Board {
 		this.width = width;
 		this.height = height;
 		this.channel = Channels.newChannel(System.out);
-		this.buffer = ByteBuffer.allocate(width*height*PIXEL_CODE_LENGTH*2);
+		this.buffer = ByteBuffer.allocate(width*height*PIXEL_CODE_LENGTH);
+		this.bucket = new ByteBuffer[width*height];
 	}
 }

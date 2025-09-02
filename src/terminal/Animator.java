@@ -85,6 +85,7 @@ public class Animator {
 			}
 		}
 
+		board.clear();
 		board.render();
 	}
 
@@ -96,6 +97,7 @@ public class Animator {
 			}
 		}
 		
+		board.clear();
 		board.render();
 
 	}

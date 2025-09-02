@@ -7,9 +7,7 @@ import component.Cube;
 import component.Flat;
 import terminal.Animator;
 import terminal.Board;
-import terminal.Color;
 import terminal.KeyMapper;
-import terminal.Unix;
 import moviment.Magic;
 
 public class Motion {
@@ -25,8 +23,6 @@ public class Motion {
 		camera = new Camera(cube);
 		mapper = new KeyMapper();
 		board = new Board(resolution, resolution);
-
-
 
 
 
