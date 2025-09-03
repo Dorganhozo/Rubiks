@@ -14,7 +14,7 @@ public class Board {
 
 	private final static String CLEAR_CODE = "\033[H\033[J";
 	private final static String HIDE_CURSOR_CODE ="\033[?25l";
-	private final static String UNHIDE_CURSOR_CODE ="\033[?25r";
+	private final static String UNHIDE_CURSOR_CODE ="\033[?25h";
 	private final int PIXEL_CODE_LENGTH = 32;
 	 
 	private int offsetX, offsetY, width, height;
@@ -81,6 +81,13 @@ public class Board {
 
 	public int getOffsetY() {
 	    return offsetY;
+	}
+
+	public void resize(int offsetX, int offsetY, int width, int height){
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
+		this.width = width;
+		this.height = height;
 	}
 
 

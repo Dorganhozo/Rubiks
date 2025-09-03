@@ -16,8 +16,8 @@ public final class Unix {
 			String[] result = new String(out.readAllBytes()).trim().split(" ");
 
 			int[] size = {
-				Integer.parseInt(result[0]),
-				Integer.parseInt(result[1])
+				Integer.parseInt(result[1])/2,
+				Integer.parseInt(result[0])
 			};
 
 			return size;

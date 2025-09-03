@@ -16,7 +16,7 @@ public class Animator {
 			return Color.EMPTY;
 
 		int column = (int)floor(min(abs(x) / (context.getProportion() / flat.getDimesion()), flat.getDimesion() - 1));
-		int line = (int)floor(min(abs(y - 1) / (context.getProportion() / flat.getDimesion()), flat.getDimesion() - 1));
+		int line = (int)floor(min(abs(y) / (context.getProportion() / flat.getDimesion()), flat.getDimesion() - 1));
 
 		return flat.getFace(column, line).getColor();
 	}
@@ -61,11 +61,13 @@ public class Animator {
 	}
 
 	public static void startPlaneRotation(Flat flat, boolean counterClockWise, Motion context){
+		int begin = 0;
+		int end = 90;
 		int increment = 1;
 		if(counterClockWise)
 			increment = -1;		
 
-		for(int angle=0; Math.abs(angle) <= 90; angle+=increment * SPEED){
+		for(int angle=begin; Math.abs(angle) <= end; angle+=increment * SPEED){
 			drawPlaneRotation(flat, Math.toRadians(angle), context);
 
 			try{
@@ -101,8 +103,8 @@ public class Animator {
 	private static void drawVerticallyRotation(Flat flatA, Flat flatB, double angle, Motion context){
 		Board board = context.getBoard();
 
-		for (int j = 0; j < 16; j++) {
-			for (int i = 0; i < 16; i++) {
+		for (int j = 0; j < context.getProportion(); j++) {
+			for (int i = 0; i < context.getProportion(); i++) {
 				int xa = i + context.getResolution()/2 - context.getProportion()/2;
 				int ya = getA(j, context.getProportion(), angle) + context.getResolution()/2 - context.getProportion()/2;
 				Color colorA = getColor(i, j, flatA, context);
@@ -129,7 +131,7 @@ public class Animator {
 
 		for (int j = 0; j < board.getHeight(); j++) {
 			for (int i = 0; i < board.getWidth(); i++) {
-				int x = (int)( (i - a/2) * cos(angle) + (j - a/2) * sin(angle) + context.getProportion()/2 );
+				int x = (int)( (i - a/2) * cos(angle) + (j - a/2) * sin(angle) + context.getProportion()/2);
 				int y = (int)(-(i - b/2) * sin(angle) + (j - a/2) * cos(angle) + context.getProportion()/2);
 				Color color = getColor(x, y, flat, context);
 

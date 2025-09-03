@@ -25,17 +25,9 @@ public class Motion {
 		cube = new Cube(dimension);
 		camera = new Camera(cube);
 		mapper = new KeyMapper();
-
-		
-		int[] size = Unix.getTerminalSize();
-
-		resolution = Math.min(size[0], size[1]);
-
 		board = new Board(0, 0, resolution, resolution);
 
-		
-
-
+		updateBoardMetrics();
 
 		mapper.bind('a', (e)->{
 			Flat past = camera.getPerspectiveFaces();
@@ -92,11 +84,14 @@ public class Motion {
 
 		board.hideCursor();
 		while(true){
+
+
+			updateBoardMetrics();
 			Flat currentFaces = camera.getPerspectiveFaces();
 			
 			board.clear();
 
-
+			
 			for(int y=0; y < proportion; y++)
 				for(int x=0; x < proportion; x++){
 					int i = Math.min(x / ( proportion/ cube.dim), cube.dim - 1);
@@ -104,10 +99,33 @@ public class Motion {
 					board.pixel(x + resolution/2 - proportion/2, y + resolution/2 - proportion/2, currentFaces.getFace(i, j).getColor());
 				}
 
+			System.out.printf("\033[%s;%sH%s",  board.getHeight()+board.getOffsetY() + 1, board.getOffsetX(), "ACT: wasd, (r)otate, +shift=reverse");
+
 
 			board.render();
 			mapper.input(this);
 		}
+	}
+
+	private void updateBoardMetrics(){
+		int[] size = Unix.getTerminalSize();
+		resolution = (int)Math.sqrt(2 * proportion*proportion);
+
+		board.resize(size[0]/2 - resolution/2, size[1]/2 - resolution/2, resolution, resolution);
+
+	
+	}
+
+	private void drawChess(){
+		for (int j = 0; j < board.getHeight(); j++) {
+			for (int i = 0; i < board.getWidth(); i++) {
+				if(j%2 == i%2)
+					board.pixel(i, j, Color.ORANGE);
+			}
+		}
+		board.render();
+
+
 	}
 
 	public Board getBoard() {
